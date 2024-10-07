@@ -25,8 +25,8 @@ const App = () => {
   
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>([])
-  const [previousClicked, setPreviousClicked] = useState("")
-  const [currentClicked, setClicked] = useState("")
+  const [previousClicked, setPreviousClicked] = useState<null | TileType>(null)
+  const [currentClicked, setClicked] = useState<null | TileType>(null)
   const [clickCount, setClickCount] = useState(0)
 
   useEffect(() => {
@@ -51,11 +51,11 @@ const App = () => {
   function resetMove() {
     console.log("reset");
     setClickCount(0)
-    setPreviousClicked("")
-    setClicked("")
+    setPreviousClicked(null)
+    setClicked(null)
   }
 
-  function reverseClickedTile() {
+  function reverseClickedTile(id: number) {
     setDuplicatedTiles(
       duplicatedTiles.map((tile) => {
         if (tile.id === id) {
@@ -71,14 +71,25 @@ const App = () => {
 
     if (clickCount >= 2) {
       // if tiles do not match hide them
+      // if (previousClicked !== currentTile.tileName) {
+        // remove class from the two tiles
+        // duplicatedTiles.map((tile) => {
+        //   return { ...tile, revealed: false}
+        // })
+
+        // setTimeout(() => {
+          // reverseClickedTile(id)
+          // reverseClickedTile(previousClicked)
+        // }, 1000)
+      // }
       
       // else remove them from list
 
       resetMove()
     } else {
-      reverseClickedTile()
+      reverseClickedTile(id)
       
-      setClicked(currentTile.tileName)
+      setClicked(currentTile)
       setPreviousClicked(currentClicked)
       
       setClickCount(clickCount + 1)
