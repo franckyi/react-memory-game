@@ -1,33 +1,121 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import Menu from './components/Menu'
+import './assets/css/input.scss';
+import western from './model/sets/western';
+import Tile from './components/Tile';
+import { Footer } from './components/Footer';
+import { TileType } from './types/tile';
 
-function App() {
-  const [count, setCount] = useState(0)
+// const initialGameStatus = {
+//   won: false,
+//   lost: false,
+//   currentTile: ""
+// }
+
+// const initialMoveStatus = {
+//   previousClicked: "",
+//   currentClicked: "",
+// }
+
+const App = () => {
+  const [limit, setLimit] = useState(2)
+  // const [theme, setTheme] = useState("western")
+  // const [matched, setMatched] = useState(false)
+  // const [gameStatus, setGameStatus] = useState(initialGameStatus)
+  
+  const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
+  const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>([])
+  const [previousClicked, setPreviousClicked] = useState("")
+  const [currentClicked, setClicked] = useState("")
+  const [clickCount, setClickCount] = useState(0)
+
+  useEffect(() => {
+    setInitialTiles(initialTiles.slice(0, limit))
+
+    setDuplicatedTiles([
+      ...initialTiles,
+      ...initialTiles.map((tile) => ({
+        ...tile, // Copy all the properties
+        id: tile.id + 100,
+        tileName: `${tile.tileName}_pair` // Modify the tileName
+      }))
+    ])
+    
+    sortTilesRandomly();
+  }, [limit])
+
+  function sortTilesRandomly() {
+    duplicatedTiles.sort(() => Math.random() - 0.5);
+  }
+
+  function resetMove() {
+    console.log("reset");
+    setClickCount(0)
+    setPreviousClicked("")
+    setClicked("")
+  }
+
+  function reverseClickedTile() {
+    setDuplicatedTiles(
+      duplicatedTiles.map((tile) => {
+        if (tile.id === id) {
+          return { ...tile, revealed: !tile.revealed };
+        }
+        return tile;
+      })
+    );
+  }
+
+  function handleTileClick(id: number) {
+    const currentTile = duplicatedTiles.filter( tile => tile.id === id)[0]
+
+    if (clickCount >= 2) {
+      // if tiles do not match hide them
+      
+      // else remove them from list
+
+      resetMove()
+    } else {
+      reverseClickedTile()
+      
+      setClicked(currentTile.tileName)
+      setPreviousClicked(currentClicked)
+      
+      setClickCount(clickCount + 1)
+    }
+
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {/* <Menu setLimit={setLimit} setTheme={setTheme} /> */}
+      <div className="tiles">
+      {duplicatedTiles.map((tile) => (
+        <Tile
+          key={tile.id}
+          id={tile.id}
+          img={tile.img}
+          revealed={tile.revealed}
+          handleTileClick={handleTileClick}
+        />
+      ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <br/><br/>
+      clickCount: {clickCount}<br/>
+      previous: {previousClicked}<br/>
+      current: {currentClicked}
+      {/* <br/><br/>
+      initialTiles.length: {initialTiles.length}<br/>
+      initialTiles:<br/>
+      {JSON.stringify(initialTiles)} */}
+
+      <br/><br/>
+      duplicatedTiles.length: {duplicatedTiles.length}<br/>
+      duplicatedTiles:<br/>
+      {JSON.stringify(duplicatedTiles)}
+
+      <Footer />
     </>
   )
 }
