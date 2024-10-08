@@ -6,6 +6,7 @@ import Tile from './components/Tile';
 import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 import { GameStatusType } from './types/gameStatus';
+import { SettingsType } from './types/settings';
 
 const initialGameStatus: GameStatusType = {
   won: false,
@@ -14,13 +15,13 @@ const initialGameStatus: GameStatusType = {
 
 const defaultSettings = {
   limit: 3,
-  difficulty: "Medium",
-  time: 60
+  difficulty: "Easy",
+  time: 30,
   remainingMoves: 12
 }
 
 const App = () => {
-  const [limit, setLimit] = useState(defaultSettings.limit)
+  // const [limit, setLimit] = useState(defaultSettings.limit)
   // const [theme, setTheme] = useState("western")
   const [gameStatus, setGameStatus] = useState(initialGameStatus)
   
@@ -29,10 +30,10 @@ const App = () => {
   const [previousClicked, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
-  const [settings, setSettings] = useState({defaultSettings})
+  const [settings, setSettings] = useState(defaultSettings)
 
   useEffect(() => {
-    setInitialTiles(initialTiles.slice(0, limit))
+    setInitialTiles(initialTiles.slice(0, settings.limit))
 
     setDuplicatedTiles([
       ...initialTiles,
@@ -44,7 +45,7 @@ const App = () => {
     ])
     
     sortTilesRandomly();
-  }, [limit])
+  }, [settings.limit])
 
   function sortTilesRandomly() {
     duplicatedTiles.sort(() => Math.random() - 0.5);
@@ -155,17 +156,8 @@ const App = () => {
         </div>
       }
 
+      {/* TODO: Replace with alert or modal */}
       {duplicatedTiles.every(tile => tile.matched) && <h1>You win</h1>}
-
-      <br/><br/>
-      clickCount: {clickCount} <br/>
-      previous: {previousClicked}---
-      current: {currentClicked}
-
-      <br/><br/>
-      duplicatedTiles.length: {duplicatedTiles.length}<br/>
-      duplicatedTiles:<br/>
-      {JSON.stringify(duplicatedTiles)}
 
       {/* <Footer /> */}
     </>

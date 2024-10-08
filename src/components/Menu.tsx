@@ -1,20 +1,30 @@
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {gameStatus, settings, setSettings, theme, setTheme} : MenuProps ) => {
+const Menu = ( {gameStatus, settings, setSettings,
+    // theme, setTheme
+} : MenuProps ) => {
 
-    function handleThemeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        event.preventDefault()
-        setTheme(event.target.value)
-    }
+    // function handleThemeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    //     event.preventDefault()
+    //     setTheme(event.target.value)
+    // }
 
-    function handleSettingsChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    function handleDifficultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
         event.preventDefault()
-        setSettings(settings.limit, event.target.value, settings.time)
+        setSettings({
+            ...settings,
+            difficulty: event.target.value,
+            limit: event.target.value === "easy" ? 3 : event.target.value === "medium" ? 7 : 14,
+            remainingMoves: event.target.value === "easy" ? 12 : event.target.value === "medium" ? 20 : 30,
+            time: event.target.value === "easy" ? 30 : event.target.value === "medium" ? 20 : 45
+        })
     }
 
     return (
         <header className="menu">
             Moves: {gameStatus.movesCount}
+            <span>remainingMoves: {settings.remainingMoves}</span>
+            <span>time: {settings.time}</span>
             {/* <div>
                 <span>Current theme: {theme}</span>
             </div>
@@ -31,13 +41,12 @@ const Menu = ( {gameStatus, settings, setSettings, theme, setTheme} : MenuProps 
 
             <form action="">
                 <label htmlFor="difficulty">Difficulty</label>
-                <select name="difficulty" id="difficulty" onChange={handleSettingsChange}>
+                <select name="difficulty" id="difficulty" onChange={handleDifficultyChange}>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select>
             </form>
-            <span>Difficulty: {settings.difficulty}</span>
         </header>
     )
 }
