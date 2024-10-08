@@ -6,22 +6,16 @@ import Tile from './components/Tile';
 import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 
-// const initialGameStatus = {
-//   won: false,
-//   lost: false,
-//   currentTile: ""
-// }
-
-// const initialMoveStatus = {
-//   previousClicked: "",
-//   currentClicked: "",
-// }
+const initialGameStatus = {
+  won: false,
+  movesCount: 0
+}
 
 const App = () => {
   const [limit, setLimit] = useState(2)
   // const [theme, setTheme] = useState("western")
   // const [matched, setMatched] = useState(false)
-  // const [gameStatus, setGameStatus] = useState(initialGameStatus)
+  const [gameStatus, setGameStatus] = useState(initialGameStatus)
   
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>([])
@@ -74,63 +68,74 @@ const App = () => {
   }, [clickCount])
 
   function handleTileClick(id: number) {
-    const currentTile = duplicatedTiles.filter( tile => tile.id === id)[0]
-    const previousTile = duplicatedTiles.filter( tile => tile.tileName === currentClicked)[0]
-
+    const currentTile = duplicatedTiles.find(tile => tile.id === id);
+    const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
+  
     if (!currentTile || (previousTile && currentTile.id === previousTile.id)) return;
-    
-    setClicked(currentTile.tileName)
-    setPreviousClicked(currentClicked)
-
+  
+    setClicked(currentTile.tileName);
+    setPreviousClicked(currentClicked);
+  
     if (clickCount < 2) {
-      reverseClickedTile(id)
-      setClickCount(clickCount + 1)
+      reverseClickedTile(id);
+      setClickCount(clickCount + 1);
     }
-    
-    else if (currentTile.matchCode !== previousTile.matchCode) {
+  
+    if (clickCount === 1) {
+
+      if (previousTile && currentTile.matchCode === previousTile.matchCode) {
+        setTimeout(() => {
+          setDuplicatedTiles(duplicatedTiles.filter(tile => tile.matchCode !== currentTile.matchCode));
+          resetMove();
+          setIsMatch(true);
+        }, 500);
+      }
       
-      setTimeout(() => {
-        setDuplicatedTiles(duplicatedTiles.map((tile) => {
-          return { ...tile, revealed: false };
-        }));
-        resetMove();
-        setIsMatch(false);
-      }, 1000);
+      else if (previousTile && currentTile.matchCode !== previousTile.matchCode) {
+        setTimeout(() => {
+          setDuplicatedTiles(duplicatedTiles.map(tile => ({
+            ...tile,
+            revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
+          })));
+          resetMove();
+          setIsMatch(false);
+        }, 500);
+      }
 
-      resetMove()
-      setIsMatch(false)
-      console.log(previousTile.matchCode, currentTile.matchCode);
-    }
-
-    else if (currentTile.matchCode === previousTile.matchCode) {
-
-      setDuplicatedTiles(duplicatedTiles.filter(tile => tile.matchCode !== currentTile.matchCode));
-
-      resetMove()
-      setIsMatch(true)
-      console.log(previousTile.matchCode, currentTile.matchCode);
     }
 
   }
 
+  useEffect(() => {
+    if (duplicatedTiles.length === 0) {
+      setGameStatus((prevStatus) => ({
+        ...prevStatus,
+        won: true
+      }));
+    }
+  }, [duplicatedTiles]);
+  
   return (
     <>
       {/* <Menu setLimit={setLimit} setTheme={setTheme} /> */}
-      <div className="tiles">
-      {duplicatedTiles.map((tile) => (
-        !tile.matched &&
-        <Tile
-          key={tile.id}
-          id={tile.id}
-          img={tile.img}
-          revealed={tile.revealed}
-          handleTileClick={handleTileClick}
-        />
-      ))}
-      </div>
 
-      <br/>
-      <h1>{isMatch ? "match" : "no match"}</h1>
+      {duplicatedTiles.length > 0 &&
+        <div className="tiles">
+          {duplicatedTiles.map((tile) => (
+            !tile.matched &&
+            <Tile
+              key={tile.id}
+              id={tile.id}
+              img={tile.img}
+              revealed={tile.revealed}
+              handleTileClick={handleTileClick}
+            />
+          ))}
+        </div>
+      }
+
+      {duplicatedTiles.length === 0 && <h1>You win</h1>}
+
       <br/><br/>
       clickCount: {clickCount} <br/>
       previous: {previousClicked}---
