@@ -5,16 +5,23 @@ import western from './model/sets/western';
 import Tile from './components/Tile';
 import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
+import { GameStatusType } from './types/gameStatus';
 
-const initialGameStatus = {
+const initialGameStatus: GameStatusType = {
   won: false,
   movesCount: 0
 }
 
+const defaultSettings = {
+  limit: 3,
+  difficulty: "Medium",
+  time: 60
+  remainingMoves: 12
+}
+
 const App = () => {
-  const [limit, setLimit] = useState(2)
+  const [limit, setLimit] = useState(defaultSettings.limit)
   // const [theme, setTheme] = useState("western")
-  // const [matched, setMatched] = useState(false)
   const [gameStatus, setGameStatus] = useState(initialGameStatus)
   
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
@@ -22,7 +29,7 @@ const App = () => {
   const [previousClicked, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
-  const [isMatch, setIsMatch] = useState(false)
+  const [settings, setSettings] = useState({defaultSettings})
 
   useEffect(() => {
     setInitialTiles(initialTiles.slice(0, limit))
@@ -37,7 +44,7 @@ const App = () => {
     ])
     
     sortTilesRandomly();
-  }, [limit, isMatch])
+  }, [limit])
 
   function sortTilesRandomly() {
     duplicatedTiles.sort(() => Math.random() - 0.5);
@@ -71,9 +78,13 @@ const App = () => {
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
   
     if (!currentTile ||
-      (previousTile && currentTile.id === previousTile.id) ||
-      duplicatedTiles.every(tile => tile.matched)
+      (previousTile && currentTile.id === previousTile.id)
     ) return;
+
+    if (duplicatedTiles.every(tile => tile.matched)) {
+      setGameStatus({ ...gameStatus, won: true });
+      return;
+    }
   
     setClicked(currentTile.tileName);
     setPreviousClicked(currentClicked);
@@ -81,6 +92,7 @@ const App = () => {
     if (clickCount < 2) {
       reverseClickedTile(id);
       setClickCount(clickCount + 1);
+      setGameStatus({ ...gameStatus, movesCount: gameStatus.movesCount + 1 });
     }
   
     if (clickCount === 1) {
@@ -124,7 +136,9 @@ const App = () => {
   
   return (
     <>
-      {/* <Menu setLimit={setLimit} setTheme={setTheme} /> */}
+      <Menu gameStatus={gameStatus} settings={settings} setSettings={setSettings} 
+      // setTheme={setTheme} theme={theme} 
+      />
 
       {duplicatedTiles.length > 0 &&
         <div className="tiles" onClick={(e)=>e.preventDefault()}>
