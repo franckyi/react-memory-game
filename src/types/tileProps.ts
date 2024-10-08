@@ -3,7 +3,7 @@ export type TileProps = {
     // tileName: string
     img: string
     revealed: boolean
-    // matched: boolean
+    matched: boolean
     handleTileClick: (id: number) => void
     // setRevealed: (revealed: boolean) => void
     // setMatched: (matched: boolean) => void

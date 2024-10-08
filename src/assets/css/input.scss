@@ -19,6 +19,9 @@
             display: block;
         }
     }
+    &--matched {
+        background: #416868;
+    }
     &__img {
         display: none;
         height: 60%;

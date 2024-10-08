@@ -85,9 +85,21 @@ const App = () => {
 
       if (previousTile && currentTile.matchCode === previousTile.matchCode) {
         setTimeout(() => {
-          setDuplicatedTiles(duplicatedTiles.filter(tile => tile.matchCode !== currentTile.matchCode));
+          // setDuplicatedTiles(duplicatedTiles.filter(tile => {
+          //   tile.matchCode === currentTile.matchCode || tile.matchCode === previousTile.matchCode ? tile.matched = true : tile.matched = false;
+          //   return tile
+          // }));
+
+          setDuplicatedTiles(
+            duplicatedTiles.map((tile) => {
+              if (tile.matchCode === currentTile.matchCode || tile.matchCode === previousTile.matchCode) {
+                return { ...tile, matched: true, revealed: true };
+              }
+              return tile;
+            })
+          );
           resetMove();
-          setIsMatch(true);
+          // setIsMatch(true);
         }, 500);
       }
       
@@ -98,7 +110,7 @@ const App = () => {
             revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
           })));
           resetMove();
-          setIsMatch(false);
+          // setIsMatch(false);
         }, 500);
       }
 
@@ -122,12 +134,12 @@ const App = () => {
       {duplicatedTiles.length > 0 &&
         <div className="tiles">
           {duplicatedTiles.map((tile) => (
-            !tile.matched &&
             <Tile
               key={tile.id}
               id={tile.id}
               img={tile.img}
               revealed={tile.revealed}
+              matched={tile.matched}
               handleTileClick={handleTileClick}
             />
           ))}
