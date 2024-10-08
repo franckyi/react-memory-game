@@ -25,9 +25,10 @@ const App = () => {
   
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>([])
-  const [previousClicked, setPreviousClicked] = useState<null | TileType>(null)
-  const [currentClicked, setClicked] = useState<null | TileType>(null)
+  const [previousClicked, setPreviousClicked] = useState("")
+  const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
+  const [isMatch, setIsMatch] = useState(false)
 
   useEffect(() => {
     setInitialTiles(initialTiles.slice(0, limit))
@@ -35,24 +36,17 @@ const App = () => {
     setDuplicatedTiles([
       ...initialTiles,
       ...initialTiles.map((tile) => ({
-        ...tile, // Copy all the properties
+        ...tile,
         id: tile.id + 100,
-        tileName: `${tile.tileName}_pair` // Modify the tileName
+        tileName: `${tile.tileName}_pair`
       }))
     ])
     
     sortTilesRandomly();
-  }, [limit])
+  }, [limit, isMatch])
 
   function sortTilesRandomly() {
     duplicatedTiles.sort(() => Math.random() - 0.5);
-  }
-
-  function resetMove() {
-    console.log("reset");
-    setClickCount(0)
-    setPreviousClicked(null)
-    setClicked(null)
   }
 
   function reverseClickedTile(id: number) {
@@ -66,33 +60,55 @@ const App = () => {
     );
   }
 
+  function resetMove() {
+    console.log("reset");
+    setClickCount(0)
+    setPreviousClicked("")
+    setClicked("")
+  }
+
+  useEffect(() => {
+    if (clickCount > 2) {
+      resetMove()
+    }
+  }, [clickCount])
+
   function handleTileClick(id: number) {
     const currentTile = duplicatedTiles.filter( tile => tile.id === id)[0]
+    const previousTile = duplicatedTiles.filter( tile => tile.tileName === currentClicked)[0]
 
-    if (clickCount >= 2) {
-      // if tiles do not match hide them
-      // if (previousClicked !== currentTile.tileName) {
-        // remove class from the two tiles
-        // duplicatedTiles.map((tile) => {
-        //   return { ...tile, revealed: false}
-        // })
+    if (!currentTile || (previousTile && currentTile.id === previousTile.id)) return;
+    
+    setClicked(currentTile.tileName)
+    setPreviousClicked(currentClicked)
 
-        // setTimeout(() => {
-          // reverseClickedTile(id)
-          // reverseClickedTile(previousClicked)
-        // }, 1000)
-      // }
+    if (clickCount < 2) {
+      reverseClickedTile(id)
+      setClickCount(clickCount + 1)
+    }
+    
+    else if (currentTile.matchCode !== previousTile.matchCode) {
       
-      // else remove them from list
+      setTimeout(() => {
+        setDuplicatedTiles(duplicatedTiles.map((tile) => {
+          return { ...tile, revealed: false };
+        }));
+        resetMove();
+        setIsMatch(false);
+      }, 1000);
 
       resetMove()
-    } else {
-      reverseClickedTile(id)
-      
-      setClicked(currentTile)
-      setPreviousClicked(currentClicked)
-      
-      setClickCount(clickCount + 1)
+      setIsMatch(false)
+      console.log(previousTile.matchCode, currentTile.matchCode);
+    }
+
+    else if (currentTile.matchCode === previousTile.matchCode) {
+
+      setDuplicatedTiles(duplicatedTiles.filter(tile => tile.matchCode !== currentTile.matchCode));
+
+      resetMove()
+      setIsMatch(true)
+      console.log(previousTile.matchCode, currentTile.matchCode);
     }
 
   }
@@ -102,6 +118,7 @@ const App = () => {
       {/* <Menu setLimit={setLimit} setTheme={setTheme} /> */}
       <div className="tiles">
       {duplicatedTiles.map((tile) => (
+        !tile.matched &&
         <Tile
           key={tile.id}
           id={tile.id}
@@ -112,21 +129,19 @@ const App = () => {
       ))}
       </div>
 
+      <br/>
+      <h1>{isMatch ? "match" : "no match"}</h1>
       <br/><br/>
-      clickCount: {clickCount}<br/>
-      previous: {previousClicked}<br/>
+      clickCount: {clickCount} <br/>
+      previous: {previousClicked}---
       current: {currentClicked}
-      {/* <br/><br/>
-      initialTiles.length: {initialTiles.length}<br/>
-      initialTiles:<br/>
-      {JSON.stringify(initialTiles)} */}
 
       <br/><br/>
       duplicatedTiles.length: {duplicatedTiles.length}<br/>
       duplicatedTiles:<br/>
       {JSON.stringify(duplicatedTiles)}
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
