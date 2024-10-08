@@ -55,7 +55,6 @@ const App = () => {
   }
 
   function resetMove() {
-    console.log("reset");
     setClickCount(0)
     setPreviousClicked("")
     setClicked("")
@@ -71,7 +70,10 @@ const App = () => {
     const currentTile = duplicatedTiles.find(tile => tile.id === id);
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
   
-    if (!currentTile || (previousTile && currentTile.id === previousTile.id)) return;
+    if (!currentTile ||
+      (previousTile && currentTile.id === previousTile.id) ||
+      duplicatedTiles.every(tile => tile.matched)
+    ) return;
   
     setClicked(currentTile.tileName);
     setPreviousClicked(currentClicked);
@@ -85,11 +87,6 @@ const App = () => {
 
       if (previousTile && currentTile.matchCode === previousTile.matchCode) {
         setTimeout(() => {
-          // setDuplicatedTiles(duplicatedTiles.filter(tile => {
-          //   tile.matchCode === currentTile.matchCode || tile.matchCode === previousTile.matchCode ? tile.matched = true : tile.matched = false;
-          //   return tile
-          // }));
-
           setDuplicatedTiles(
             duplicatedTiles.map((tile) => {
               if (tile.matchCode === currentTile.matchCode || tile.matchCode === previousTile.matchCode) {
@@ -99,7 +96,6 @@ const App = () => {
             })
           );
           resetMove();
-          // setIsMatch(true);
         }, 500);
       }
       
@@ -110,7 +106,6 @@ const App = () => {
             revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
           })));
           resetMove();
-          // setIsMatch(false);
         }, 500);
       }
 
@@ -132,7 +127,7 @@ const App = () => {
       {/* <Menu setLimit={setLimit} setTheme={setTheme} /> */}
 
       {duplicatedTiles.length > 0 &&
-        <div className="tiles">
+        <div className="tiles" onClick={(e)=>e.preventDefault()}>
           {duplicatedTiles.map((tile) => (
             <Tile
               key={tile.id}
@@ -146,7 +141,7 @@ const App = () => {
         </div>
       }
 
-      {duplicatedTiles.length === 0 && <h1>You win</h1>}
+      {duplicatedTiles.every(tile => tile.matched) && <h1>You win</h1>}
 
       <br/><br/>
       clickCount: {clickCount} <br/>
