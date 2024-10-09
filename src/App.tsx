@@ -3,10 +3,10 @@ import Menu from './components/Menu'
 import './assets/css/input.scss';
 import western from './model/sets/western';
 import Tile from './components/Tile';
-import { Footer } from './components/Footer';
+// import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 import { GameStatusType } from './types/gameStatus';
-import { SettingsType } from './types/settings';
+// import { SettingsType } from './types/settings';
 
 const initialGameStatus: GameStatusType = {
   won: false,
@@ -33,24 +33,22 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0)
 
   useEffect(() => {
-    setDuplicatedTiles([
-      ...duplicatedTiles,
-      ...duplicatedTiles.map((tile) => ({
+    console.log('difficulty changed:', settings);
+    const limitedTiles = initialTiles.slice(0, settings.limit);
+  
+    const duplicated = [
+      ...limitedTiles,
+      ...limitedTiles.map((tile) => ({
         ...tile,
         id: tile.id + 100,
         tileName: `${tile.tileName}_pair`
       }))
-    ])    
-  }, [settings.difficulty])
-
-  useEffect(() => {
-    console.log('Settings changed:', settings);
-    
-    // setInitialTiles(initialTiles.slice(0, settings.limit))
-    setDuplicatedTiles(duplicatedTiles.slice(0, settings.limit))
-    
-    // sortTilesRandomly();
-  }, [settings.difficulty])
+    ];
+  
+    const shuffledTiles = duplicated.sort(() => Math.random() - 0.5);
+  
+    setDuplicatedTiles(shuffledTiles);
+  }, [settings.limit, settings.difficulty]);
 
   function sortTilesRandomly() {
     duplicatedTiles.sort(() => Math.random() - 0.5);
