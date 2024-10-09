@@ -14,14 +14,15 @@ const Menu = ( {gameStatus, settings, setSettings,
         setSettings({
             ...settings,
             difficulty: event.target.value,
-            limit: event.target.value === "easy" ? 3 : event.target.value === "medium" ? 7 : 14,
-            remainingMoves: event.target.value === "easy" ? 12 : event.target.value === "medium" ? 20 : 30,
-            time: event.target.value === "easy" ? 30 : event.target.value === "medium" ? 20 : 45
+            limit: event.target.value === "easy" ? 8 : 12,
+            time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 45 : 30,
+            remainingMoves: event.target.value === "easy" ? 20 : event.target.value === "medium" ? 18 : 16,
         })
     }
 
     return (
         <header className="menu">
+            limit: {settings.limit}<br/>
             Moves: {gameStatus.movesCount}
             <span>remainingMoves: {settings.remainingMoves}</span>
             <span>time: {settings.time}</span>

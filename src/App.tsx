@@ -14,38 +14,43 @@ const initialGameStatus: GameStatusType = {
 }
 
 const defaultSettings = {
-  limit: 3,
+  limit: 8,
   difficulty: "Easy",
   time: 30,
-  remainingMoves: 12
+  remainingMoves: 20
 }
 
 const App = () => {
   // const [limit, setLimit] = useState(defaultSettings.limit)
   // const [theme, setTheme] = useState("western")
   const [gameStatus, setGameStatus] = useState(initialGameStatus)
+  const [settings, setSettings] = useState(defaultSettings)
   
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
-  const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>([])
+  const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>(initialTiles)
   const [previousClicked, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
-  const [settings, setSettings] = useState(defaultSettings)
 
   useEffect(() => {
-    setInitialTiles(initialTiles.slice(0, settings.limit))
-
     setDuplicatedTiles([
-      ...initialTiles,
-      ...initialTiles.map((tile) => ({
+      ...duplicatedTiles,
+      ...duplicatedTiles.map((tile) => ({
         ...tile,
         id: tile.id + 100,
         tileName: `${tile.tileName}_pair`
       }))
-    ])
+    ])    
+  }, [settings.difficulty])
+
+  useEffect(() => {
+    console.log('Settings changed:', settings);
     
-    sortTilesRandomly();
-  }, [settings.limit])
+    // setInitialTiles(initialTiles.slice(0, settings.limit))
+    setDuplicatedTiles(duplicatedTiles.slice(0, settings.limit))
+    
+    // sortTilesRandomly();
+  }, [settings.difficulty])
 
   function sortTilesRandomly() {
     duplicatedTiles.sort(() => Math.random() - 0.5);

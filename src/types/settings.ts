@@ -1,6 +1,6 @@
 export type SettingsType = {
-    limit: number
     difficulty: string
+    limit: number
     time: number
     remainingMoves: number
 }
