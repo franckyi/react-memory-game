@@ -82,10 +82,25 @@ const App = () => {
     }
   }, [clickCount])
 
+  function startTimer() {
+    // useEffect(() => {
+      setTimeout(() => {
+        setSettings({
+          ...settings,
+          time: settings.time - 1
+        })
+      }, 1000)
+    // }, []);
+  }
+
   function handleTileClick(id: number) {
     const currentTile = duplicatedTiles.find(tile => tile.id === id);
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
   
+    if (clickCount === 0) {
+      startTimer();
+    }
+
     if (!currentTile ||
       (previousTile && currentTile.id === previousTile.id) ||
       gameStatus.currentRemainingMoves === 0
