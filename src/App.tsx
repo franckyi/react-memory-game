@@ -10,11 +10,12 @@ import { GameStatusType } from './types/gameStatus';
 
 const initialGameStatus: GameStatusType = {
   won: false,
-  movesCount: 0
+  movesCount: 0,
+  currentRemainingMoves: 20
 }
 
 const defaultSettings = {
-  limit: 8,
+  limit: 4,
   difficulty: "Easy",
   time: 30,
   remainingMoves: 20
@@ -72,6 +73,10 @@ const App = () => {
   }
 
   useEffect(() => {
+    setGameStatus({...initialGameStatus, movesCount: 0});
+  }, [settings.difficulty])
+
+  useEffect(() => {
     if (clickCount > 2) {
       resetMove()
     }
@@ -82,7 +87,8 @@ const App = () => {
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
   
     if (!currentTile ||
-      (previousTile && currentTile.id === previousTile.id)
+      (previousTile && currentTile.id === previousTile.id) ||
+      gameStatus.currentRemainingMoves === 0
     ) return;
 
     if (duplicatedTiles.every(tile => tile.matched)) {
@@ -96,7 +102,11 @@ const App = () => {
     if (clickCount < 2) {
       reverseClickedTile(id);
       setClickCount(clickCount + 1);
-      setGameStatus({ ...gameStatus, movesCount: gameStatus.movesCount + 1 });
+      setGameStatus({
+        ...gameStatus,
+        movesCount: gameStatus.movesCount + 1,
+        currentRemainingMoves: gameStatus.currentRemainingMoves - 1
+      })
     }
   
     if (clickCount === 1) {

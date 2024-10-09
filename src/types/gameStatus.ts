@@ -1,4 +1,5 @@
 export type GameStatusType = {
     won: boolean,
-    movesCount: number
+    movesCount: number,
+    currentRemainingMoves: number
 }
