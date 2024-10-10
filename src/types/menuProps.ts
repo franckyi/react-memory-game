@@ -5,6 +5,7 @@ export type MenuProps = {
     gameStatus: GameStatusType
     settings: SettingsType
     setSettings: (settings: SettingsType) => void
+    timeLeft: number
     // theme: string
     // setTheme: (theme: string) => void
     // limit: number

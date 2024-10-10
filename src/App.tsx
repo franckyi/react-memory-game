@@ -6,7 +6,6 @@ import Tile from './components/Tile';
 // import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 import { GameStatusType } from './types/gameStatus';
-// import { SettingsType } from './types/settings';
 
 const initialGameStatus: GameStatusType = {
   won: false,
@@ -22,7 +21,6 @@ const defaultSettings = {
 }
 
 const App = () => {
-  // const [limit, setLimit] = useState(defaultSettings.limit)
   // const [theme, setTheme] = useState("western")
   const [gameStatus, setGameStatus] = useState(initialGameStatus)
   const [settings, setSettings] = useState(defaultSettings)
@@ -32,6 +30,8 @@ const App = () => {
   const [previousClicked, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
+  const [isTimerOn, setIsTimerOn] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(settings.time)
 
   useEffect(() => {
     console.log('difficulty changed:', settings);
@@ -50,10 +50,6 @@ const App = () => {
   
     setDuplicatedTiles(shuffledTiles);
   }, [settings.limit, settings.difficulty]);
-
-  function sortTilesRandomly() {
-    duplicatedTiles.sort(() => Math.random() - 0.5);
-  }
 
   function reverseClickedTile(id: number) {
     setDuplicatedTiles(
@@ -82,23 +78,28 @@ const App = () => {
     }
   }, [clickCount])
 
-  function startTimer() {
-    // useEffect(() => {
-      setTimeout(() => {
-        setSettings({
-          ...settings,
-          time: settings.time - 1
-        })
-      }, 1000)
-    // }, []);
-  }
+  useEffect(() => {
+    let intervalId: number | undefined = undefined;
+
+    if (isTimerOn && timeLeft > 0) {
+      intervalId = setInterval(() => {
+        setTimeLeft((timeLeft) => timeLeft - 1);
+      }, 1000);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isTimerOn, timeLeft]);
 
   function handleTileClick(id: number) {
     const currentTile = duplicatedTiles.find(tile => tile.id === id);
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
   
-    if (clickCount === 0) {
-      startTimer();
+    if (clickCount === 0 && !isTimerOn) {
+      setIsTimerOn(true);
     }
 
     if (!currentTile ||
@@ -165,7 +166,7 @@ const App = () => {
   
   return (
     <>
-      <Menu gameStatus={gameStatus} settings={settings} setSettings={setSettings} 
+      <Menu gameStatus={gameStatus} settings={settings} setSettings={setSettings} timeLeft={timeLeft} 
       // setTheme={setTheme} theme={theme} 
       />
 

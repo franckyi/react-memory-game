@@ -1,6 +1,6 @@
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {gameStatus, settings, setSettings,
+const Menu = ( {gameStatus, settings, setSettings, timeLeft
     // theme, setTheme
 } : MenuProps ) => {
 
@@ -17,10 +17,9 @@ const Menu = ( {gameStatus, settings, setSettings,
 
     return (
         <header className="menu">
-            current remaining moves: {gameStatus.currentRemainingMoves}<br/>
             Moves: {gameStatus.movesCount}
-            <span>remainingMoves: {settings.remainingMoves}</span>
-            <span>time: {settings.time}</span>
+            <span>remaining: {gameStatus.currentRemainingMoves}</span>
+            <span>time: {timeLeft}</span>
             {/* <div>
                 <span>Current theme: {theme}</span>
             </div>
