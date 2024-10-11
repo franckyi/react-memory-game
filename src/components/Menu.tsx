@@ -1,6 +1,7 @@
+import { initialStats } from "../model/initial-states"
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {gameStatus, settings, setSettings, timeLeft
+const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft
     // theme, setTheme
 } : MenuProps ) => {
 
@@ -17,6 +18,7 @@ const Menu = ( {gameStatus, settings, setSettings, timeLeft
 
     return (
         <header className="menu">
+            won: {stats.won}
             Moves: {gameStatus.movesCount}
             <span>remaining: {gameStatus.currentRemainingMoves}</span>
             <span>time: {timeLeft}</span>

@@ -5,26 +5,14 @@ import western from './model/sets/western';
 import Tile from './components/Tile';
 // import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
-import { GameStatusType } from './types/gameStatus';
-
-const initialGameStatus: GameStatusType = {
-  won: false,
-  movesCount: 0,
-  currentRemainingMoves: 20
-}
-
-const defaultSettings = {
-  limit: 4,
-  difficulty: "Easy",
-  time: 30,
-  remainingMoves: 20
-}
+import { defaultSettings, initialGameStatus, initialStats } from './model/initial-states';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
   const [gameStatus, setGameStatus] = useState(initialGameStatus)
   const [settings, setSettings] = useState(defaultSettings)
-  
+  const [stats, setStats] = useState(initialStats)
+
   const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>(initialTiles)
   const [previousClicked, setPreviousClicked] = useState("")
@@ -32,6 +20,8 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0)
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
+
+  let intervalId: number | undefined = undefined;
 
   useEffect(() => {
     console.log('difficulty changed:', settings);
@@ -79,7 +69,6 @@ const App = () => {
   }, [clickCount])
 
   useEffect(() => {
-    let intervalId: number | undefined = undefined;
 
     if (isTimerOn && timeLeft > 0) {
       intervalId = setInterval(() => {
@@ -87,6 +76,14 @@ const App = () => {
       }, 1000);
     } else {
       clearInterval(intervalId);
+      
+      if (duplicatedTiles.every(tile => tile.matched)) {
+        setGameStatus({ ...gameStatus, won: true });
+        setStats({ ...stats, won: stats.won + 1 });
+      } else {
+        setGameStatus({ ...gameStatus, lost: true });
+        setStats({ ...stats, lost: stats.lost + 1 });
+      }
     }
 
     return () => {
@@ -109,6 +106,7 @@ const App = () => {
 
     if (duplicatedTiles.every(tile => tile.matched)) {
       setGameStatus({ ...gameStatus, won: true });
+      clearInterval(intervalId)
       return;
     }
   
@@ -166,7 +164,7 @@ const App = () => {
   
   return (
     <>
-      <Menu gameStatus={gameStatus} settings={settings} setSettings={setSettings} timeLeft={timeLeft} 
+      <Menu stats={stats} setStats={setStats} gameStatus={gameStatus} settings={settings} setSettings={setSettings} timeLeft={timeLeft} 
       // setTheme={setTheme} theme={theme} 
       />
 
@@ -186,7 +184,7 @@ const App = () => {
       }
 
       {/* TODO: Replace with alert or modal */}
-      {duplicatedTiles.every(tile => tile.matched) && <h1>You win</h1>}
+      <h1>won: {gameStatus.won? "true" : "false"}</h1>
 
       {/* <Footer /> */}
     </>
