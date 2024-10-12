@@ -24,10 +24,8 @@ a:hover {
 
 body {
   overflow: hidden;
-  padding: 20px;
+  padding: 0;
   margin: 0;
-  width: 100vw;
-  height: 100vh;
   min-height: 100vh;
   background: darkslategray;
   color: burlywood;
