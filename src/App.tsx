@@ -7,7 +7,7 @@ import Tile from './components/Tile';
 import { TileType } from './types/tile';
 import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
 import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
-import { checkIfWon, createTiles, startNewGame, handleWin, checkIfRecord } from './functions/game-functions';
+import { checkIfWon, createTiles, startNewGame, handleEndGame, checkIfRecord } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
 import { calculateScore, resetMovesCount } from './functions/stats-functions';
 
@@ -24,6 +24,7 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0)
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
+  const [timeUp, setTimeUp] = useState(false)
   const [restartGame, setRestartGame] = useState(false)
 
   let intervalId: number | undefined = undefined;
@@ -44,7 +45,7 @@ const App = () => {
     if ( checkIfWon(duplicatedTiles) ) {
       stopTime(intervalId, setIsTimerOn);
       setStatus({ ...status, won: true, lost: false });
-      calculateScore(timeLeft, setStatus, status);
+      calculateScore(timeLeft, setStatus, status, duplicatedTiles);
       return;
     }
     else {
@@ -53,8 +54,8 @@ const App = () => {
       if (currentTile !== undefined) {
         reverseClickedTile(id, duplicatedTiles, setDuplicatedTiles);
         
-        setClicked((prevClicked) => currentTile.tileName);
-        setPreviousClicked((prevPrevClicked) => currentClicked);
+        setClicked(() => currentTile.tileName);
+        setPreviousClicked(() => currentClicked);
   
         setClickCount((prevClickCount) => {
           const newClickCount = prevClickCount + 1;
@@ -97,13 +98,13 @@ const App = () => {
 
   // handle difficulty change
   useEffect(() => {
-    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
   }, [settings.difficulty]);
 
   // handle restart game
   useEffect(() => {
     if (restartGame) {
-      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
     }
   }, [restartGame]);
 
@@ -117,44 +118,68 @@ const App = () => {
   // handle win/lose
   useEffect(() => {
     if ( checkIfWon(duplicatedTiles) ) {
+      //
       stopTime(intervalId, setIsTimerOn);
-      setStatus({ ...status, won: true, lost: false, score: timeLeft + status.remainingMoves });
+      calculateScore(timeLeft, setStatus, status, duplicatedTiles);
+      
       setStats({
         ...stats,
         won: stats.won + 1,
       });
     }
     else {
+      // lose
       setStatus({ ...status, won: false, lost: true });
       setStats({ ...stats, lost: stats.lost + 1 });
     }
-  }, [duplicatedTiles]);
+  }, [duplicatedTiles, timeUp]);
 
-  // handle win
+  // handle end game
   useEffect(() => {
-    if (status.won) {
-      alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
-      checkIfRecord(stats, setStats, status.score);
+    if (status.remainingMoves === 0
+      || timeLeft === 0
+    ) {
+      stopTime(intervalId, setIsTimerOn);
 
-      const playAgain = handleWin();
-      if ( playAgain ) {
+      calculateScore(timeLeft, setStatus, status, duplicatedTiles);
+
+      checkIfWon(duplicatedTiles)
+
+      if (status.won) {
+        alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
+      } else {
+        alert(`You lose 😭\nYour score is: ${status.score}`);
+      }
+  
+      checkIfRecord(stats, setStats, status.score);
+  
+      const playAgain = handleEndGame();
+      
+      if (playAgain) {
         setRestartGame(true);
       } else {
         setRestartGame(false);
       }
+      
     }
-  }, [status]);
+
+  }, [status.remainingMoves, timeLeft]);
 
   // handle timer
   useEffect(() => {
     if (isTimerOn) {
       const intervalId = setInterval(() => {
-        setTimeLeft(prevTimeLeft => prevTimeLeft - 1);
+        if (timeLeft > 0) {
+          setTimeLeft(prevTimeLeft => prevTimeLeft - 1);
+        } else {
+          stopTime(intervalId, setIsTimerOn);
+          setTimeUp(true);
+        }
       }, 1000);
   
       return () => clearInterval(intervalId);
     }
-  }, [isTimerOn]);
+  }, [isTimerOn, timeLeft]);
   
   return (
     <>

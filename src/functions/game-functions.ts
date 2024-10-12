@@ -36,13 +36,16 @@ export const startNewGame = (
     setDuplicatedTiles: any,
     setStatus: any,
     setTimeLeft: any,
+    setTimeUp: React.Dispatch<React.SetStateAction<boolean>>
     ) => {
     createTiles(initialTiles, settings, setDuplicatedTiles);
     resetMovesCount(setStatus, initialStatus);
     setTimeLeft(settings.time);
+    setStatus(initialStatus);
+    setTimeUp(false);
 }
 
-export const handleWin = () => {
+export const handleEndGame = () => {
     const playAgain = window.confirm(`Play again?`);
     if (playAgain) {
         console.log("restarted game");
