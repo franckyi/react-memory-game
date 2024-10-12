@@ -36,7 +36,6 @@ export const startNewGame = (
     setDuplicatedTiles: React.Dispatch<React.SetStateAction<TileType[]>>,
     setStatus: React.Dispatch<React.SetStateAction<StatusType>>,
     setTimeLeft: React.Dispatch<React.SetStateAction<number>>,
-    setTimeUp: React.Dispatch<React.SetStateAction<boolean>>
     ) => {
     console.log("ready to play");
 
@@ -44,6 +43,5 @@ export const startNewGame = (
     resetMovesCount(setStatus, initialStatus);
     setTimeLeft(settings.time);
     setStatus(initialStatus);
-    setTimeUp(false);
 }
 

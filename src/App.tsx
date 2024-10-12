@@ -7,9 +7,9 @@ import Tile from './components/Tile';
 import { TileType } from './types/tile';
 import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
 import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
-import { checkIfWon, createTiles, startNewGame } from './functions/game-functions';
+import { checkIfWon, startNewGame } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
-import { calculateScore, resetMovesCount, checkIfRecord } from './functions/stats-functions';
+import { calculateScore, checkIfRecord } from './functions/stats-functions';
 
 const App = () => {
   const [theme, setTheme] = useState("western")
@@ -24,7 +24,6 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0)
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
-  const [timeUp, setTimeUp] = useState(false)
   const [restartGame, setRestartGame] = useState(false)
 
   let intervalId: number | undefined = undefined;
@@ -102,13 +101,13 @@ const App = () => {
 
   // handle difficulty change
   useEffect(() => {
-    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
+    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
   }, [settings.difficulty, stats.won, stats.lost]);
 
   // handle restart game
   useEffect(() => {
     if (restartGame) {
-      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
+      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
     }
   }, [restartGame]);
 
@@ -129,7 +128,6 @@ const App = () => {
     if (stats.lost) {
       alert(`You lose. Try again 🧐\n`);
     }
-    // startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
   }, [stats.lost])
   
   // handle win
@@ -165,7 +163,7 @@ const App = () => {
       }
 
       setTimeout(() => {
-        startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
+        startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
       }, 2000);
     }
 
@@ -179,7 +177,6 @@ const App = () => {
           setTimeLeft(prevTimeLeft => prevTimeLeft - 1);
         } else {
           stopTime(intervalId, setIsTimerOn);
-          setTimeUp(true);
         }
       }, 1000);
   
