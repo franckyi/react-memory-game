@@ -1,5 +1,6 @@
 import { initialStatus } from "../model/initial-states";
 import { SettingsType } from "../types/settings";
+import { StatsType } from "../types/stats";
 import { TileType } from "../types/tile";
 import { resetMovesCount } from "./stats-functions";
 
@@ -41,17 +42,27 @@ export const startNewGame = (
     setTimeLeft(settings.time);
 }
 
-export const handleWin = (
-    setRestartGame: React.Dispatch<React.SetStateAction<boolean>>,
-    ) => {
-    let playAgain = window.confirm("Congrats 🎉 You did it!\nPlay again?");
-
+export const handleWin = () => {
+    const playAgain = window.confirm(`Play again?`);
     if (playAgain) {
-        setRestartGame(true);
         console.log("restarted game");
+        return true;
     }
     else {
         console.log("quitted game");
-        setRestartGame(false);
+        return false;
+    }
+}
+
+export const checkIfRecord = (
+    stats: StatsType,
+    setStats: React.Dispatch<React.SetStateAction<StatsType>>,
+    score: number
+    ) => {
+    if (score > stats.record) {
+        setStats({
+            ...stats,
+            record: score
+        });
     }
 }

@@ -3,5 +3,5 @@ export type StatusType = {
     lost: boolean,
     moves: number,
     remainingMoves: number,
-    currentScore: number
+    score: number
 }

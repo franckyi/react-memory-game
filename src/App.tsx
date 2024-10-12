@@ -7,9 +7,9 @@ import Tile from './components/Tile';
 import { TileType } from './types/tile';
 import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
 import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
-import { checkIfWon, createTiles, startNewGame, handleWin } from './functions/game-functions';
+import { checkIfWon, createTiles, startNewGame, handleWin, checkIfRecord } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
-import { resetMovesCount } from './functions/stats-functions';
+import { calculateScore, resetMovesCount } from './functions/stats-functions';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
@@ -44,6 +44,7 @@ const App = () => {
     if ( checkIfWon(duplicatedTiles) ) {
       stopTime(intervalId, setIsTimerOn);
       setStatus({ ...status, won: true, lost: false });
+      calculateScore(timeLeft, setStatus, status);
       return;
     }
     else {
@@ -83,7 +84,6 @@ const App = () => {
                   revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
                 })));
                 resetMove(setClickCount, setPreviousClicked, setClicked);
-              // reverseClickedTile(id);
               }, 500);
             }
           }
@@ -118,9 +118,11 @@ const App = () => {
   useEffect(() => {
     if ( checkIfWon(duplicatedTiles) ) {
       stopTime(intervalId, setIsTimerOn);
-      setStatus({ ...status, won: true, lost: false });
-      setStats({ ...stats, won: stats.won + 1 });
-      handleWin(setRestartGame);
+      setStatus({ ...status, won: true, lost: false, score: timeLeft + status.remainingMoves });
+      setStats({
+        ...stats,
+        won: stats.won + 1,
+      });
     }
     else {
       setStatus({ ...status, won: false, lost: true });
@@ -128,6 +130,22 @@ const App = () => {
     }
   }, [duplicatedTiles]);
 
+  // handle win
+  useEffect(() => {
+    if (status.won) {
+      alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
+      checkIfRecord(stats, setStats, status.score);
+
+      const playAgain = handleWin();
+      if ( playAgain ) {
+        setRestartGame(true);
+      } else {
+        setRestartGame(false);
+      }
+    }
+  }, [status]);
+
+  // handle timer
   useEffect(() => {
     if (isTimerOn) {
       const intervalId = setInterval(() => {
