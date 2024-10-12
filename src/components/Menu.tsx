@@ -5,19 +5,19 @@ const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, set
 
     function handleDifficultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
         event.preventDefault()
+        console.log("event.target.value", event.target.value);
+        console.log("settings", settings);
         setSettings({
             ...settings,
             difficulty: event.target.value,
             limit: event.target.value === "easy" ? 4 : event.target.value === "medium" ? 6 : 8,
-            time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 50 : 40,
-            remainingMoves: event.target.value === "easy" ? 20 : event.target.value === "medium" ? 22 : 30,
+            time: event.target.value === "easy" ? 50 : event.target.value === "medium" ? 45 : 35,
         })
         setTimeLeft(settings.time)
     }
 
     function handleThemeChange(event: React.ChangeEvent<HTMLSelectElement>) {
         event.preventDefault()
-        // console.log("event.target.value", event.target.value);
         setTheme(event.target.value)
         setInitialTiles(event.target.value === "western" ? sets.western : event.target.value === "beach" ? sets.beach : sets.animals);
     }

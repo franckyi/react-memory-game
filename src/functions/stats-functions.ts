@@ -2,7 +2,10 @@ import { StatsType } from "../types/stats";
 import { StatusType } from "../types/status";
 import { TileType } from "../types/tile";
 
-export const resetMovesCount = (setStatus: any, initialStatus: any) => {
+export const resetMovesCount = (
+    setStatus: React.Dispatch<React.SetStateAction<StatusType>>,
+    initialStatus: StatusType
+) => {
     setStatus({...initialStatus, moves: 0});
 }
 

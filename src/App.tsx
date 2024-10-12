@@ -18,14 +18,13 @@ const App = () => {
 
   const [initialTiles, setInitialTiles] = useState<TileType[]>(sets.western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>(initialTiles)
-  const [previousClicked, setPreviousClicked] = useState("")
+  const [, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
   const [clickCount, setClickCount] = useState(0)
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
-  const [restartGame, setRestartGame] = useState(false)
 
-  let intervalId: number | undefined = undefined;
+  const intervalId: number | undefined = undefined;
 
   function handleTileClick(id: number) {
     if (clickCount >= 2) {
@@ -99,14 +98,7 @@ const App = () => {
   // handle difficulty and theme change
   useEffect(() => {
     startNewGame(setClickCount, initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
-  }, [theme, initialTiles, settings.difficulty, stats.won, stats.lost]);
-
-  // handle restart game
-  useEffect(() => {
-    if (restartGame) {
-      startNewGame(setClickCount, initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
-    }
-  }, [restartGame]);
+  }, [theme, initialTiles, settings, stats.won, stats.lost]);
 
   // handle click count
   useEffect(() => {
@@ -119,7 +111,7 @@ const App = () => {
     if (stats.won) {
       alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
     }
-  }, [stats.won])
+  }, [stats.won, status.score])
 
   useEffect(() => {
     if (stats.lost) {
@@ -138,13 +130,13 @@ const App = () => {
         won: stats.won + 1,
       });
     }
-  }, [duplicatedTiles]);
+  }, [duplicatedTiles, intervalId, stats, status, timeLeft]);
 
 
   // handle record
   useEffect(() => {
     checkIfRecord(stats, setStats, status.score);
-  }, [status.score])
+  }, [status.score, stats])
 
   // handle lose
   useEffect(() => {
@@ -164,7 +156,7 @@ const App = () => {
       }, 2000);
     }
 
-  }, [status.remainingMoves, timeLeft]);
+  }, [status.remainingMoves, timeLeft, duplicatedTiles, initialTiles, intervalId, settings, stats, status]);
 
   // handle timer
   useEffect(() => {

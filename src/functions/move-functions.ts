@@ -1,9 +1,11 @@
+import { StatusType } from "../types/status";
 import { TileType } from "../types/tile";
 
 export const isValidClick = (
     previousTile: TileType | undefined,
     currentTile: TileType | undefined,
-    status: any) => {
+    status: StatusType
+    ) => {
     if (!currentTile || (previousTile && currentTile.id === previousTile.id) || status.remainingMoves === 0) {
       return false;
     }
@@ -25,7 +27,7 @@ export const reverseClickedTile = (
     );
 }
 
-export const checkIsFirstClick = (status: any, isTimerOn: boolean) => {
+export const checkIsFirstClick = (status: StatusType, isTimerOn: boolean) => {
     if (status.moves === 0 && !isTimerOn) {
       console.log("first move, start timer");
       return true;
@@ -34,9 +36,9 @@ export const checkIsFirstClick = (status: any, isTimerOn: boolean) => {
 }
 
 export const resetMove = (
-    setClickCount: any,
-    setPreviousClicked: any,
-    setClicked: any) => {
+    setClickCount: React.Dispatch<React.SetStateAction<number>>,
+    setPreviousClicked: React.Dispatch<React.SetStateAction<string>>,
+    setClicked: React.Dispatch<React.SetStateAction<string>>) => {
     setClickCount(0)
     setPreviousClicked("")
     setClicked("")

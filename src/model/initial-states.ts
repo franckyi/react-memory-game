@@ -8,17 +8,18 @@ export const initialStats: StatsType = {
     record: 0
 }
 
-export const initialStatus: StatusType = {
-    won: false,
-    lost: false,
-    moves: 0,
-    remainingMoves: 20,
-    score: 0
-}
-  
+
 export const defaultSettings: SettingsType = {
     limit: 4,
     difficulty: "Easy",
     time: 60,
-    remainingMoves: 20
+    remainingMoves: 24
+}
+
+export const initialStatus: StatusType = {
+    won: false,
+    lost: false,
+    moves: 0,
+    remainingMoves: defaultSettings.remainingMoves,
+    score: 0
 }
