@@ -1,20 +1,20 @@
 export const level = {
     "easy": {
         value: "easy",
-        limit: 8,
+        limit: 4,
         time: 60,
         remainingMoves: 20
     },
     "medium": {
         value: "medium",
-        limit: 12,
-        time: 45,
-        remainingMoves: 18
+        limit: 6,
+        time: 50,
+        remainingMoves: 22
     },
     "hard": {
         value: "hard",
-        limit: 12,
-        time: 30,
-        remainingMoves: 16
+        limit: 8,
+        time: 40,
+        remainingMoves: 30
     }
 }
