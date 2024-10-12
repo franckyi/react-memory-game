@@ -93,19 +93,12 @@
 }
 
 footer {
-    height: 120px;
+    margin-top: 20px;
     padding: 1rem;
+    font-size: 10px;
+    font-style: italic;
     text-align: center;
-    background: rgb(20, 33, 33);
-    
-    a,
-    a:visited,
-    a:active,
-    a:hover,
-    a:focus-visible,
-    a:focus {
-        color: rosybrown;
-    }
+    color: #416868;
 }
 
 button {

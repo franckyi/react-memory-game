@@ -210,6 +210,7 @@ const App = () => {
           </div>
         </main>
       }
+      <footer>illustratons from freepik </footer>
     </>
   )
 }

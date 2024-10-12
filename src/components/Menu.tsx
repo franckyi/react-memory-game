@@ -19,7 +19,7 @@ const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, set
         event.preventDefault()
         // console.log("event.target.value", event.target.value);
         setTheme(event.target.value)
-        setInitialTiles(event.target.value === "western" ? sets.western : sets.beach);
+        setInitialTiles(event.target.value === "western" ? sets.western : event.target.value === "beach" ? sets.beach : sets.animals);
     }
 
     return (
@@ -37,7 +37,7 @@ const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, set
                     <select name="theme" id="theme" onChange={handleThemeChange}>
                         <option value="western" defaultChecked>Western</option>
                         <option value="beach">Beach</option>
-                        <option value="random">Random</option>
+                        <option value="animals">Animals</option>
                     </select>
                 </form>
 
