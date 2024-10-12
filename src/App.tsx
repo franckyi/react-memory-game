@@ -115,51 +115,67 @@ const App = () => {
     }
   }, [clickCount])
 
-  // handle win/lose
+  useEffect(() => {
+    if (stats.won) {
+      alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
+    }
+  }, [stats.won])
+
+  // handle win
   useEffect(() => {
     if ( checkIfWon(duplicatedTiles) ) {
       //
       stopTime(intervalId, setIsTimerOn);
       calculateScore(timeLeft, setStatus, status, duplicatedTiles);
-      
+      checkIfRecord(stats, setStats, status.score);
+
       setStats({
         ...stats,
         won: stats.won + 1,
       });
     }
-    else {
-      // lose
-      setStatus({ ...status, won: false, lost: true });
-      setStats({ ...stats, lost: stats.lost + 1 });
-    }
-  }, [duplicatedTiles, timeUp]);
+  }, [duplicatedTiles]);
 
-  // handle end game
+  useEffect(() => {
+    if (stats.lost) {
+      alert(`You lose 😭\nYour score is: ${status.score}`);
+    }
+  }, [stats.lost])
+
+  // handle lose
   useEffect(() => {
     if (status.remainingMoves === 0
       || timeLeft === 0
     ) {
       stopTime(intervalId, setIsTimerOn);
-
       calculateScore(timeLeft, setStatus, status, duplicatedTiles);
-
-      checkIfWon(duplicatedTiles)
-
-      if (status.won) {
-        alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
-      } else {
-        alert(`You lose 😭\nYour score is: ${status.score}`);
-      }
-  
       checkIfRecord(stats, setStats, status.score);
-  
-      const playAgain = handleEndGame();
-      
-      if (playAgain) {
-        setRestartGame(true);
-      } else {
-        setRestartGame(false);
+
+      if ( !checkIfWon(duplicatedTiles) ) {
+        setStatus({ ...status, lost: true, won: false });
+        setStats({
+          ...stats,
+          lost: stats.lost + 1
+        })
       }
+
+      // if (status.won) {
+      //   alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
+      // } else {
+        // alert(`You lose 😭\nYour score is: ${status.score}`);
+      // }
+  
+      // checkIfRecord(stats, setStats, status.score);
+  
+      // const playAgain = handleEndGame();
+      
+      // if (playAgain) {
+      //   setRestartGame(true);
+      // } else {
+        //   setRestartGame(false);
+        // }
+      
+      setRestartGame(true);
       
     }
 
@@ -211,7 +227,7 @@ const App = () => {
         </main>
       }
 
-      {status.won && !restartGame && <button type="button" onClick={() => setRestartGame(true)}>Play again</button>}
+      <button type="button" onClick={() => setRestartGame(true)}>Play again</button>
     </>
   )
 }
