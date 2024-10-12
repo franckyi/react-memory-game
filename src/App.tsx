@@ -6,6 +6,9 @@ import Tile from './components/Tile';
 // import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 import { defaultSettings, initialGameStatus, initialStats } from './model/initial-states';
+import { isValidClick, resetMove, checkIsFirstMove, reverseClickedTile } from './functions/move-functions';
+import { checkIfWon, createTiles } from './functions/game-functions';
+import { stopTime } from './functions/timer-functions';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
@@ -23,89 +26,29 @@ const App = () => {
 
   let intervalId: number | undefined = undefined;
 
-  // functions
-
-  function createTiles() {
-    console.log('difficulty changed:', settings);
-
-    const limitedTiles = initialTiles.slice(0, settings.limit);
-    const duplicated = [
-      ...limitedTiles,
-      ...limitedTiles.map((tile) => ({
-        ...tile,
-        id: tile.id + 100,
-        tileName: `${tile.tileName}_pair`
-      }))
-    ];
-    const shuffledTiles = duplicated.sort(() => Math.random() - 0.5);
-
-    setDuplicatedTiles(shuffledTiles);
-  }
-
-  function reverseClickedTile(id: number) {
-    setDuplicatedTiles(
-      duplicatedTiles.map((tile) => {
-        if (tile.id === id) {
-          return { ...tile, revealed: !tile.revealed };
-        }
-        return tile;
-      })
-    );
-  }
-  
-  function resetMove() {
-    setClickCount(0)
-    setPreviousClicked("")
-    setClicked("")
-  }
-
-  function checkIsFirstMove() {
-    if (gameStatus.movesCount === 0 && !isTimerOn) {
-      console.log("first move");
-      return true;
-    }
-    return false;
-  }
-
-  function checkIfWon() {
-    if (duplicatedTiles.every(tile => tile.matched)) {
-      console.log("won");
-      return true
-    }
-    return false;
-  }
-
-  function isValidClick(
-    previousTile: TileType | undefined,
-    currentTile: TileType | undefined,
-    gameStatus: any) {
-    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || gameStatus.currentRemainingMoves === 0) {
-      return false;
-    }
-    return true;
-  }
-
   function handleTileClick(id: number) {
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
     const currentTile = duplicatedTiles.find(tile => tile.id === id);    
   
-    if ( checkIsFirstMove() ) {
+    if ( checkIsFirstMove(gameStatus, isTimerOn) ) {
       setIsTimerOn(true);
-    } else {
-      if ( checkIfWon() ) {
-        clearInterval(intervalId)
-        setIsTimerOn(false);
-        setTimeLeft(settings.time);
-        setGameStatus({ ...gameStatus, won: true });
-        return;
-      }
-        
-      if ( !isValidClick(previousTile, currentTile, gameStatus) ) {
-        return;
-      }
-  
+    }
+
+    if ( !isValidClick(previousTile, currentTile, gameStatus) ) {
+      console.log("wrong click");
+      return;
+    }
+
+    if ( checkIfWon(duplicatedTiles) ) {
+      stopTime(intervalId, setIsTimerOn);
+      setGameStatus({ ...gameStatus, won: true, lost: false });
+      return;
+    }
+    else {
+      // continue game
+
       if (currentTile !== undefined) {
-        reverseClickedTile(id);
+        reverseClickedTile(id, duplicatedTiles, setDuplicatedTiles);
         
         setClicked((prevClicked) => currentTile.tileName);
         setPreviousClicked((prevPrevClicked) => currentClicked);
@@ -129,7 +72,7 @@ const App = () => {
                     return tile;
                   })
                 );
-                resetMove();
+                resetMove(setClickCount, setPreviousClicked, setClicked);
               }, 500);
             } else if (previousTile && currentTile.matchCode !== previousTile.matchCode) {
               setTimeout(() => {
@@ -137,22 +80,37 @@ const App = () => {
                   ...tile,
                   revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
                 })));
-                resetMove();
+                resetMove(setClickCount, setPreviousClicked, setClicked);
               // reverseClickedTile(id);
               }, 500);
             }
           }
+
           return newClickCount;
         });
       }
     }
+        
   }
 
   // useEffects
 
   useEffect(() => {
-    createTiles()
+    createTiles(initialTiles, settings, setDuplicatedTiles);
   }, [settings.difficulty]);
+
+  useEffect(() => {
+    if ( checkIfWon(duplicatedTiles) ) {
+      stopTime(intervalId, setIsTimerOn);
+      setGameStatus({ ...gameStatus, won: true, lost: false });
+      setStats({ ...stats, won: stats.won + 1 });
+    }
+    else {
+      setGameStatus({ ...gameStatus, won: false, lost: true });
+      setStats({ ...stats, lost: stats.lost + 1 });
+    }
+  }, [duplicatedTiles]);
+  
 
   useEffect(() => {
     setGameStatus({...initialGameStatus, movesCount: 0});
@@ -160,32 +118,18 @@ const App = () => {
 
   useEffect(() => {
     if (clickCount > 2) {
-      resetMove()
+      resetMove(setClickCount, setPreviousClicked, setClicked)
     }
   }, [clickCount])
 
-  useEffect(() => {
-
-    if (isTimerOn && timeLeft > 0) {
-      intervalId = setInterval(() => {
-        setTimeLeft((timeLeft) => timeLeft - 1);
-      }, 1000);
-    } else {
-      clearInterval(intervalId);
-      
-      if (duplicatedTiles.every(tile => tile.matched)) {
-        setGameStatus({ ...gameStatus, won: true });
-        setStats({ ...stats, won: stats.won + 1 });
-      } else {
-        setGameStatus({ ...gameStatus, lost: true });
-        setStats({ ...stats, lost: stats.lost + 1 });
-      }
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isTimerOn]);
+  // useEffect(() => {
+  //   if (isTimerOn && timeLeft > 0) {
+  //     countTime(intervalId);
+  //   }
+  //   else if (isTimerOn && timeLeft === 0) {
+  //     stopTime();
+  //   }
+  // }, [isTimerOn, timeLeft,]);
   
   return (
     <>
