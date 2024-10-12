@@ -9,7 +9,7 @@ export const initialStats = {
 export const initialStatus: StatusType = {
     won: false,
     lost: false,
-    movesCount: 0,
+    moves: 0,
     remainingMoves: 20
 }
   

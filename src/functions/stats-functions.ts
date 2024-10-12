@@ -1,3 +1,3 @@
 export const resetMovesCount = (setStatus: any, initialStatus: any) => {
-    setStatus({...initialStatus, movesCount: 0});
+    setStatus({...initialStatus, moves: 0});
 }

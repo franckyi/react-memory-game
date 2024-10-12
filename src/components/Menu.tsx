@@ -20,7 +20,7 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
     return (
         <header className="menu">
             <span>Won: {stats.won}</span>
-            Moves: {status.movesCount}
+            Moves: {status.moves}
             <span>Remaining: {status.remainingMoves}</span>
             <span>Time: {timeLeft}</span>
             {/* <div>

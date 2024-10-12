@@ -26,7 +26,7 @@ export const reverseClickedTile = (
 }
 
 export const checkIsFirstClick = (status: any, isTimerOn: boolean) => {
-    if (status.movesCount === 0 && !isTimerOn) {
+    if (status.moves === 0 && !isTimerOn) {
       console.log("first move, start timer");
       return true;
     }

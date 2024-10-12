@@ -59,7 +59,7 @@ const App = () => {
           const newClickCount = prevClickCount + 1;
           setStatus({
             ...status,
-            movesCount: status.movesCount + 1,
+            moves: status.moves + 1,
             remainingMoves: status.remainingMoves - 1
           });
   
