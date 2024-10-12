@@ -19,25 +19,25 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
 
     return (
         <header className="menu">
-            <span>Won: {stats.won}</span>
-            Moves: {status.moves}
-            <span>Remaining: {status.remainingMoves}</span>
-            <span>Time: {timeLeft}</span>
-            {/* <div>
-                <span>Current theme: {theme}</span>
-            </div>
-      
-            <form action="">
-                <label htmlFor="theme">Change theme</label>
-                <select name="theme" id="theme" onChange={handleThemeChange}>
-                    <option value="western" defaultChecked>Western</option>
-                    <option value="kids">Kids</option>
-                    <option value="beach">Beach</option>
-                    <option value="random">Random</option>
-                </select>
-            </form> */}
+            
+            <div className="menu__first-row">
+                <div>
+                    <span>Won: {stats.won} </span>
+                    <span>Record: {stats.record}</span>
+                </div>
 
-            <form action="">
+                {/*      
+                <form action="">
+                    <label htmlFor="theme">Change theme</label>
+                    <select name="theme" id="theme" onChange={handleThemeChange}>
+                        <option value="western" defaultChecked>Western</option>
+                        <option value="kids">Kids</option>
+                        <option value="beach">Beach</option>
+                        <option value="random">Random</option>
+                    </select>
+                </form> */}
+
+                <form action="">
                 <label htmlFor="difficulty">Difficulty </label>
                 <select name="difficulty" id="difficulty" onChange={handleDifficultyChange}>
                     <option value="easy">Easy</option>
@@ -45,6 +45,14 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
                     <option value="hard">Hard</option>
                 </select>
             </form>
+            </div>
+
+            <div className="menu__second-row">
+                <span>Moves: {status.moves} </span>
+                <span>Remaining: {status.remainingMoves} </span>
+                <span>Time: {timeLeft}</span>
+            </div>
+
         </header>
     )
 }
