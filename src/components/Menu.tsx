@@ -1,9 +1,8 @@
 import { initialStats } from "../model/initial-states"
+import sets from "../model/sets"
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTimeLeft
-    theme, setTheme
-} : MenuProps ) => {
+const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTimeLeft, theme, setTheme, setInitialTiles} : MenuProps ) => {
 
     function handleDifficultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
         event.preventDefault()
@@ -12,9 +11,16 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
             difficulty: event.target.value,
             limit: event.target.value === "easy" ? 4 : event.target.value === "medium" ? 6 : 8,
             time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 50 : 40,
-            remainingMoves: event.target.value === "easy" ? 18 : event.target.value === "medium" ? 22 : 28,
+            remainingMoves: event.target.value === "easy" ? 20 : event.target.value === "medium" ? 22 : 30,
         })
         setTimeLeft(settings.time)
+    }
+
+    function handleThemeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        event.preventDefault()
+        // console.log("event.target.value", event.target.value);
+        setTheme(event.target.value)
+        setInitialTiles(event.target.value === "western" ? sets.western : sets.beach);
     }
 
     return (
@@ -30,7 +36,6 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
                     <label htmlFor="theme">Change theme</label>
                     <select name="theme" id="theme" onChange={handleThemeChange}>
                         <option value="western" defaultChecked>Western</option>
-                        <option value="kids">Kids</option>
                         <option value="beach">Beach</option>
                         <option value="random">Random</option>
                     </select>

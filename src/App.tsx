@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import Menu from './components/Menu'
 import './assets/css/input.scss';
-import western from './model/sets/western';
+import western from './model/sets';
+import beach from './model/sets/beach';
 import Tile from './components/Tile';
 // import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
@@ -10,14 +11,16 @@ import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from '
 import { checkIfWon, startNewGame } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
 import { calculateScore, checkIfRecord } from './functions/stats-functions';
+import sets from './model/sets';
+// import { SetType } from './types/set';
 
 const App = () => {
-  const [theme, setTheme] = useState("western")
+  const [theme, setTheme] = useState<string>("western")
   const [status, setStatus] = useState(initialStatus)
   const [settings, setSettings] = useState(defaultSettings)
   const [stats, setStats] = useState(initialStats)
 
-  const [initialTiles, setInitialTiles] = useState<TileType[]>(western)
+  const [initialTiles, setInitialTiles] = useState<TileType[]>(sets.western)
   const [duplicatedTiles, setDuplicatedTiles] = useState<TileType[]>(initialTiles)
   const [previousClicked, setPreviousClicked] = useState("")
   const [currentClicked, setClicked] = useState("")
@@ -25,6 +28,17 @@ const App = () => {
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
   const [restartGame, setRestartGame] = useState(false)
+
+  // useEffect(() => {
+  //   console.log("initialTiles set to:", initialTiles);
+  //   setInitialTiles(initialTiles);
+  //   setDuplicatedTiles(initialTiles);
+  // }, [theme, initialTiles])
+
+    // handle theme change
+    useEffect(() => {
+      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+    }, [theme, initialTiles]);
 
   let intervalId: number | undefined = undefined;
 
@@ -52,8 +66,6 @@ const App = () => {
       return;
     }
     else {
-      // continue game
-
       if (currentTile !== undefined) {
         reverseClickedTile(id, duplicatedTiles, setDuplicatedTiles);
         
@@ -194,7 +206,8 @@ const App = () => {
         setSettings={setSettings}
         timeLeft={timeLeft}
         setTimeLeft={setTimeLeft} 
-        setTheme={setTheme} theme={theme} 
+        setTheme={setTheme} theme={theme}
+        setInitialTiles={setInitialTiles}
       />
 
       {duplicatedTiles.length > 0 &&
