@@ -1,11 +1,11 @@
-import { GameStatusType } from "../types/gameStatus"
+import { GameStatusType } from "../types/status"
 import { SettingsType } from "./settings"
 import { StatsType } from "./stats"
 
 export type MenuProps = {
     stats: StatsType
     setStats: (stats: StatsType) => void
-    gameStatus: GameStatusType
+    status: GameStatusType
     settings: SettingsType
     setSettings: (settings: SettingsType) => void
     timeLeft: number

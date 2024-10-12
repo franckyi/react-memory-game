@@ -1,4 +1,4 @@
-import { GameStatusType } from "../types/gameStatus"
+import { GameStatusType } from "../types/status"
 
 export const initialStats = {
     won: 0,

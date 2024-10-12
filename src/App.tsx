@@ -12,7 +12,7 @@ import { stopTime } from './functions/timer-functions';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
-  const [gameStatus, setGameStatus] = useState(initialGameStatus)
+  const [status, setStatus] = useState(initialGameStatus)
   const [settings, setSettings] = useState(defaultSettings)
   const [stats, setStats] = useState(initialStats)
 
@@ -30,18 +30,18 @@ const App = () => {
     const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
     const currentTile = duplicatedTiles.find(tile => tile.id === id);    
   
-    if ( checkIsFirstMove(gameStatus, isTimerOn) ) {
+    if ( checkIsFirstMove(status, isTimerOn) ) {
       setIsTimerOn(true);
     }
 
-    if ( !isValidClick(previousTile, currentTile, gameStatus) ) {
+    if ( !isValidClick(previousTile, currentTile, status) ) {
       console.log("wrong click");
       return;
     }
 
     if ( checkIfWon(duplicatedTiles) ) {
       stopTime(intervalId, setIsTimerOn);
-      setGameStatus({ ...gameStatus, won: true, lost: false });
+      setStatus({ ...status, won: true, lost: false });
       return;
     }
     else {
@@ -55,10 +55,10 @@ const App = () => {
   
         setClickCount((prevClickCount) => {
           const newClickCount = prevClickCount + 1;
-          setGameStatus({
-            ...gameStatus,
-            movesCount: gameStatus.movesCount + 1,
-            currentRemainingMoves: gameStatus.currentRemainingMoves - 1
+          setStatus({
+            ...status,
+            movesCount: status.movesCount + 1,
+            currentRemainingMoves: status.currentRemainingMoves - 1
           });
   
           if (newClickCount === 2) {
@@ -93,28 +93,28 @@ const App = () => {
         
   }
 
-  // useEffects
-
+  // handle difficulty change
   useEffect(() => {
     createTiles(initialTiles, settings, setDuplicatedTiles);
+    setStatus({...initialGameStatus, movesCount: 0});
   }, [settings.difficulty]);
 
   useEffect(() => {
     if ( checkIfWon(duplicatedTiles) ) {
       stopTime(intervalId, setIsTimerOn);
-      setGameStatus({ ...gameStatus, won: true, lost: false });
+      setStatus({ ...status, won: true, lost: false });
       setStats({ ...stats, won: stats.won + 1 });
     }
     else {
-      setGameStatus({ ...gameStatus, won: false, lost: true });
+      setStatus({ ...status, won: false, lost: true });
       setStats({ ...stats, lost: stats.lost + 1 });
     }
   }, [duplicatedTiles]);
   
 
-  useEffect(() => {
-    setGameStatus({...initialGameStatus, movesCount: 0});
-  }, [settings.difficulty])
+  // useEffect(() => {
+    
+  // }, [settings.difficulty])
 
   useEffect(() => {
     if (clickCount > 2) {
@@ -136,7 +136,7 @@ const App = () => {
       <Menu
         stats={stats}
         setStats={setStats}
-        gameStatus={gameStatus}
+        status={status}
         settings={settings}
         setSettings={setSettings}
         timeLeft={timeLeft}
@@ -160,8 +160,8 @@ const App = () => {
       }
 
       {/* TODO: Replace with alert or modal */}
-      {/* {gameStatus.won? alert("You win") : alert("Try again")} */}
-      {/* <h1>won: {gameStatus.won? "true" : "false"}</h1> */}
+      {/* {status.won? alert("You win") : alert("Try again")} */}
+      {/* <h1>won: {status.won? "true" : "false"}</h1> */}
 
       {/* <Footer /> */}
     </>

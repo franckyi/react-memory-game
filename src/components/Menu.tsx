@@ -1,7 +1,7 @@
 import { initialStats } from "../model/initial-states"
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft, setTimeLeft
+const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTimeLeft
     // theme, setTheme
 } : MenuProps ) => {
 
@@ -20,8 +20,8 @@ const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft, se
     return (
         <header className="menu">
             won: {stats.won}
-            Moves: {gameStatus.movesCount}
-            <span>remaining: {gameStatus.currentRemainingMoves}</span>
+            Moves: {status.movesCount}
+            <span>remaining: {status.currentRemainingMoves}</span>
             <span>time: {timeLeft}</span>
             {/* <div>
                 <span>Current theme: {theme}</span>

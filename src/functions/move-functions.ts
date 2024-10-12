@@ -3,8 +3,8 @@ import { TileType } from "../types/tile";
 export const isValidClick = (
     previousTile: TileType | undefined,
     currentTile: TileType | undefined,
-    gameStatus: any) => {
-    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || gameStatus.currentRemainingMoves === 0) {
+    status: any) => {
+    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || status.currentRemainingMoves === 0) {
       return false;
     }
     return true;
@@ -25,8 +25,8 @@ export const reverseClickedTile = (
     );
 }
 
-export const checkIsFirstMove = (gameStatus: any, isTimerOn: boolean) => {
-    if (gameStatus.movesCount === 0 && !isTimerOn) {
+export const checkIsFirstMove = (status: any, isTimerOn: boolean) => {
+    if (status.movesCount === 0 && !isTimerOn) {
       console.log("first move, start timer");
       return true;
     }
