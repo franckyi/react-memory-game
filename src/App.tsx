@@ -30,6 +30,10 @@ const App = () => {
   let intervalId: number | undefined = undefined;
 
   function handleTileClick(id: number) {
+    if (clickCount >= 2) {
+      return;
+    }
+
     if ( checkIsFirstClick(status, isTimerOn) ) {
       setIsTimerOn(true);
     }
@@ -162,7 +166,7 @@ const App = () => {
 
       setTimeout(() => {
         startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
-      }, 500);
+      }, 2000);
     }
 
   }, [status.remainingMoves, timeLeft]);
