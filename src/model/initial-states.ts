@@ -1,4 +1,4 @@
-import { GameStatusType } from "../types/status"
+import { StatusType } from "../types/status"
 
 export const initialStats = {
     won: 0,
@@ -6,7 +6,7 @@ export const initialStats = {
     record: 0
 }
 
-export const initialGameStatus: GameStatusType = {
+export const initialStatus: StatusType = {
     won: false,
     lost: false,
     movesCount: 0,
@@ -16,6 +16,6 @@ export const initialGameStatus: GameStatusType = {
 export const defaultSettings = {
     limit: 4,
     difficulty: "Easy",
-    time: 30,
+    time: 60,
     remainingMoves: 20
 }

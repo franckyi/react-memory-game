@@ -19,10 +19,10 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
 
     return (
         <header className="menu">
-            won: {stats.won}
+            <span>Won: {stats.won}</span>
             Moves: {status.movesCount}
-            <span>remaining: {status.currentRemainingMoves}</span>
-            <span>time: {timeLeft}</span>
+            <span>Remaining: {status.currentRemainingMoves}</span>
+            <span>Time: {timeLeft}</span>
             {/* <div>
                 <span>Current theme: {theme}</span>
             </div>
@@ -38,7 +38,7 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
             </form> */}
 
             <form action="">
-                <label htmlFor="difficulty">Difficulty</label>
+                <label htmlFor="difficulty">Difficulty </label>
                 <select name="difficulty" id="difficulty" onChange={handleDifficultyChange}>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>

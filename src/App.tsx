@@ -5,14 +5,15 @@ import western from './model/sets/western';
 import Tile from './components/Tile';
 // import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
-import { defaultSettings, initialGameStatus, initialStats } from './model/initial-states';
-import { isValidClick, resetMove, checkIsFirstMove, reverseClickedTile } from './functions/move-functions';
-import { checkIfWon, createTiles } from './functions/game-functions';
+import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
+import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
+import { checkIfWon, createTiles, startNewGame, handleWin } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
+import { resetMovesCount } from './functions/stats-functions';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
-  const [status, setStatus] = useState(initialGameStatus)
+  const [status, setStatus] = useState(initialStatus)
   const [settings, setSettings] = useState(defaultSettings)
   const [stats, setStats] = useState(initialStats)
 
@@ -23,16 +24,17 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0)
   const [isTimerOn, setIsTimerOn] = useState(false)
   const [timeLeft, setTimeLeft] = useState(settings.time)
+  const [restartGame, setRestartGame] = useState(false)
 
   let intervalId: number | undefined = undefined;
 
   function handleTileClick(id: number) {
-    const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
-    const currentTile = duplicatedTiles.find(tile => tile.id === id);    
-  
-    if ( checkIsFirstMove(status, isTimerOn) ) {
+    if ( checkIsFirstClick(status, isTimerOn) ) {
       setIsTimerOn(true);
     }
+    
+    const previousTile = duplicatedTiles.find(tile => tile.tileName === currentClicked);
+    const currentTile = duplicatedTiles.find(tile => tile.id === id);    
 
     if ( !isValidClick(previousTile, currentTile, status) ) {
       console.log("wrong click");
@@ -90,46 +92,60 @@ const App = () => {
         });
       }
     }
-        
+
   }
 
   // handle difficulty change
   useEffect(() => {
-    createTiles(initialTiles, settings, setDuplicatedTiles);
-    setStatus({...initialGameStatus, movesCount: 0});
+    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
   }, [settings.difficulty]);
 
+  // handle restart game
   useEffect(() => {
-    if ( checkIfWon(duplicatedTiles) ) {
-      stopTime(intervalId, setIsTimerOn);
-      setStatus({ ...status, won: true, lost: false });
-      setStats({ ...stats, won: stats.won + 1 });
+    if (restartGame) {
+      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
     }
-    else {
-      setStatus({ ...status, won: false, lost: true });
-      setStats({ ...stats, lost: stats.lost + 1 });
-    }
-  }, [duplicatedTiles]);
-  
+  }, [restartGame]);
 
-  // useEffect(() => {
-    
-  // }, [settings.difficulty])
-
+  // handle click count
   useEffect(() => {
     if (clickCount > 2) {
       resetMove(setClickCount, setPreviousClicked, setClicked)
     }
   }, [clickCount])
 
+  // handle win/lose
+  useEffect(() => {
+    if ( checkIfWon(duplicatedTiles) ) {
+      stopTime(intervalId, setIsTimerOn);
+      setStatus({ ...status, won: true, lost: false });
+      setStats({ ...stats, won: stats.won + 1 });
+      handleWin(setRestartGame);
+    }
+    else {
+      setStatus({ ...status, won: false, lost: true });
+      setStats({ ...stats, lost: stats.lost + 1 });
+    }
+  }, [duplicatedTiles]);
+
+  // handle timer
   // useEffect(() => {
   //   if (isTimerOn && timeLeft > 0) {
-  //     countTime(intervalId);
+  //     countTime(intervalId, setTimeLeft, timeLeft);
   //   }
   //   else if (isTimerOn && timeLeft === 0) {
-  //     stopTime();
+  //     stopTime(intervalId, setIsTimerOn);
   //   }
   // }, [isTimerOn, timeLeft,]);
+  useEffect(() => {
+    if (isTimerOn) {
+      const intervalId = setInterval(() => {
+        setTimeLeft(prevTimeLeft => prevTimeLeft - 1);
+      }, 1000);
+  
+      return () => clearInterval(intervalId);
+    }
+  }, [isTimerOn]);
   
   return (
     <>
@@ -159,11 +175,7 @@ const App = () => {
         </div>
       }
 
-      {/* TODO: Replace with alert or modal */}
-      {/* {status.won? alert("You win") : alert("Try again")} */}
-      {/* <h1>won: {status.won? "true" : "false"}</h1> */}
-
-      {/* <Footer /> */}
+      {status.won && !restartGame && <button type="button" onClick={() => setRestartGame(true)}>Play again</button>}
     </>
   )
 }

@@ -3,6 +3,7 @@
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 20px;
 }
 
 .tile {
@@ -37,14 +38,14 @@
     gap: 1rem;
     padding-bottom: 5px;
     margin-bottom: 5px;
-    border-bottom: 1px solid teal;
+    border-bottom: 1px solid #416868;
 }
 
 footer {
     height: 120px;
     padding: 1rem;
     text-align: center;
-    background: darkslategray;
+    background: rgb(20, 33, 33);
     
     a,
     a:visited,
@@ -54,4 +55,10 @@ footer {
     a:focus {
         color: rosybrown;
     }
+}
+
+button {
+    margin: 20px auto;
+    display: block;
+    background: burlywood;
 }

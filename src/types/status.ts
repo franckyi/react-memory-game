@@ -1,4 +1,4 @@
-export type GameStatusType = {
+export type StatusType = {
     won: boolean,
     lost: boolean,
     movesCount: number,
