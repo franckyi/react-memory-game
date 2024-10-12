@@ -1,7 +1,7 @@
 import { initialStats } from "../model/initial-states"
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft
+const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft, setTimeLeft
     // theme, setTheme
 } : MenuProps ) => {
 
@@ -14,6 +14,7 @@ const Menu = ( {stats, setStats, gameStatus, settings, setSettings, timeLeft
             time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 45 : 30,
             remainingMoves: event.target.value === "easy" ? 20 : event.target.value === "medium" ? 18 : 16,
         })
+        setTimeLeft(settings.time)
     }
 
     return (

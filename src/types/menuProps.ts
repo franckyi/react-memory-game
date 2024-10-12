@@ -9,6 +9,7 @@ export type MenuProps = {
     settings: SettingsType
     setSettings: (settings: SettingsType) => void
     timeLeft: number
+    setTimeLeft: (timeLeft: number) => void
     // theme: string
     // setTheme: (theme: string) => void
     // limit: number

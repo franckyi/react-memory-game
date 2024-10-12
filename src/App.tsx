@@ -89,7 +89,7 @@ const App = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [isTimerOn, timeLeft]);
+  }, [isTimerOn]);
 
   function handleTileClick(id: number) {
     const currentTile = duplicatedTiles.find(tile => tile.id === id);
@@ -105,8 +105,10 @@ const App = () => {
     ) return;
 
     if (duplicatedTiles.every(tile => tile.matched)) {
-      setGameStatus({ ...gameStatus, won: true });
       clearInterval(intervalId)
+      setIsTimerOn(false);
+      setTimeLeft(settings.time);
+      setGameStatus({ ...gameStatus, won: true });
       return;
     }
   
@@ -164,7 +166,14 @@ const App = () => {
   
   return (
     <>
-      <Menu stats={stats} setStats={setStats} gameStatus={gameStatus} settings={settings} setSettings={setSettings} timeLeft={timeLeft} 
+      <Menu
+        stats={stats}
+        setStats={setStats}
+        gameStatus={gameStatus}
+        settings={settings}
+        setSettings={setSettings}
+        timeLeft={timeLeft}
+        setTimeLeft={setTimeLeft} 
       // setTheme={setTheme} theme={theme} 
       />
 
@@ -184,7 +193,8 @@ const App = () => {
       }
 
       {/* TODO: Replace with alert or modal */}
-      <h1>won: {gameStatus.won? "true" : "false"}</h1>
+      {/* {gameStatus.won? alert("You win") : alert("Try again")} */}
+      {/* <h1>won: {gameStatus.won? "true" : "false"}</h1> */}
 
       {/* <Footer /> */}
     </>
