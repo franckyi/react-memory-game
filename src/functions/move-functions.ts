@@ -4,7 +4,7 @@ export const isValidClick = (
     previousTile: TileType | undefined,
     currentTile: TileType | undefined,
     status: any) => {
-    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || status.currentRemainingMoves === 0) {
+    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || status.remainingMoves === 0) {
       return false;
     }
     return true;

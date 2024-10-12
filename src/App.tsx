@@ -60,7 +60,7 @@ const App = () => {
           setStatus({
             ...status,
             movesCount: status.movesCount + 1,
-            currentRemainingMoves: status.currentRemainingMoves - 1
+            remainingMoves: status.remainingMoves - 1
           });
   
           if (newClickCount === 2) {
@@ -128,15 +128,6 @@ const App = () => {
     }
   }, [duplicatedTiles]);
 
-  // handle timer
-  // useEffect(() => {
-  //   if (isTimerOn && timeLeft > 0) {
-  //     countTime(intervalId, setTimeLeft, timeLeft);
-  //   }
-  //   else if (isTimerOn && timeLeft === 0) {
-  //     stopTime(intervalId, setIsTimerOn);
-  //   }
-  // }, [isTimerOn, timeLeft,]);
   useEffect(() => {
     if (isTimerOn) {
       const intervalId = setInterval(() => {

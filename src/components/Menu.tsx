@@ -21,7 +21,7 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
         <header className="menu">
             <span>Won: {stats.won}</span>
             Moves: {status.movesCount}
-            <span>Remaining: {status.currentRemainingMoves}</span>
+            <span>Remaining: {status.remainingMoves}</span>
             <span>Time: {timeLeft}</span>
             {/* <div>
                 <span>Current theme: {theme}</span>

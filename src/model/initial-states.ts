@@ -10,7 +10,7 @@ export const initialStatus: StatusType = {
     won: false,
     lost: false,
     movesCount: 0,
-    currentRemainingMoves: 20
+    remainingMoves: 20
 }
   
 export const defaultSettings = {
