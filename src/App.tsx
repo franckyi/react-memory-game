@@ -7,9 +7,9 @@ import Tile from './components/Tile';
 import { TileType } from './types/tile';
 import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
 import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
-import { checkIfWon, createTiles, startNewGame, handleEndGame, checkIfRecord } from './functions/game-functions';
+import { checkIfWon, createTiles, startNewGame } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
-import { calculateScore, resetMovesCount } from './functions/stats-functions';
+import { calculateScore, resetMovesCount, checkIfRecord } from './functions/stats-functions';
 
 const App = () => {
   // const [theme, setTheme] = useState("western")
@@ -38,7 +38,7 @@ const App = () => {
     const currentTile = duplicatedTiles.find(tile => tile.id === id);    
 
     if ( !isValidClick(previousTile, currentTile, status) ) {
-      console.log("wrong click");
+      console.log("not allowed click");
       return;
     }
 
@@ -85,7 +85,7 @@ const App = () => {
                   revealed: tile.id === currentTile.id || tile.id === previousTile.id ? false : tile.revealed,
                 })));
                 resetMove(setClickCount, setPreviousClicked, setClicked);
-              }, 500);
+              }, 1000);
             }
           }
 
@@ -99,7 +99,7 @@ const App = () => {
   // handle difficulty change
   useEffect(() => {
     startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
-  }, [settings.difficulty]);
+  }, [settings.difficulty, stats.won, stats.lost]);
 
   // handle restart game
   useEffect(() => {
@@ -121,13 +121,18 @@ const App = () => {
     }
   }, [stats.won])
 
+  useEffect(() => {
+    if (stats.lost) {
+      alert(`You lose. Try again 🧐\n`);
+    }
+    // startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
+  }, [stats.lost])
+  
   // handle win
   useEffect(() => {
     if ( checkIfWon(duplicatedTiles) ) {
-      //
       stopTime(intervalId, setIsTimerOn);
       calculateScore(timeLeft, setStatus, status, duplicatedTiles);
-      checkIfRecord(stats, setStats, status.score);
 
       setStats({
         ...stats,
@@ -136,20 +141,16 @@ const App = () => {
     }
   }, [duplicatedTiles]);
 
+
+  // handle record
   useEffect(() => {
-    if (stats.lost) {
-      alert(`You lose 😭\nYour score is: ${status.score}`);
-    }
-  }, [stats.lost])
+    checkIfRecord(stats, setStats, status.score);
+  }, [status.score])
 
   // handle lose
   useEffect(() => {
-    if (status.remainingMoves === 0
-      || timeLeft === 0
-    ) {
+    if (status.remainingMoves === 0 || timeLeft === 0) {
       stopTime(intervalId, setIsTimerOn);
-      calculateScore(timeLeft, setStatus, status, duplicatedTiles);
-      checkIfRecord(stats, setStats, status.score);
 
       if ( !checkIfWon(duplicatedTiles) ) {
         setStatus({ ...status, lost: true, won: false });
@@ -159,24 +160,9 @@ const App = () => {
         })
       }
 
-      // if (status.won) {
-      //   alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
-      // } else {
-        // alert(`You lose 😭\nYour score is: ${status.score}`);
-      // }
-  
-      // checkIfRecord(stats, setStats, status.score);
-  
-      // const playAgain = handleEndGame();
-      
-      // if (playAgain) {
-      //   setRestartGame(true);
-      // } else {
-        //   setRestartGame(false);
-        // }
-      
-      setRestartGame(true);
-      
+      setTimeout(() => {
+        startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft, setTimeUp);
+      }, 500);
     }
 
   }, [status.remainingMoves, timeLeft]);
@@ -226,8 +212,6 @@ const App = () => {
           </div>
         </main>
       }
-
-      <button type="button" onClick={() => setRestartGame(true)}>Play again</button>
     </>
   )
 }

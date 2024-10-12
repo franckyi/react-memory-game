@@ -11,8 +11,8 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
             ...settings,
             difficulty: event.target.value,
             limit: event.target.value === "easy" ? 4 : event.target.value === "medium" ? 6 : 8,
-            time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 45 : 30,
-            remainingMoves: event.target.value === "easy" ? 20 : event.target.value === "medium" ? 18 : 16,
+            time: event.target.value === "easy" ? 60 : event.target.value === "medium" ? 50 : 40,
+            remainingMoves: event.target.value === "easy" ? 18 : event.target.value === "medium" ? 22 : 24,
         })
         setTimeLeft(settings.time)
     }

@@ -1,6 +1,6 @@
 import { initialStatus } from "../model/initial-states";
 import { SettingsType } from "../types/settings";
-import { StatsType } from "../types/stats";
+import { StatusType } from "../types/status";
 import { TileType } from "../types/tile";
 import { resetMovesCount } from "./stats-functions";
 
@@ -33,11 +33,13 @@ export const checkIfWon = (tiles: TileType[]) => {
 export const startNewGame = (
     initialTiles: TileType[],
     settings: SettingsType,
-    setDuplicatedTiles: any,
-    setStatus: any,
-    setTimeLeft: any,
+    setDuplicatedTiles: React.Dispatch<React.SetStateAction<TileType[]>>,
+    setStatus: React.Dispatch<React.SetStateAction<StatusType>>,
+    setTimeLeft: React.Dispatch<React.SetStateAction<number>>,
     setTimeUp: React.Dispatch<React.SetStateAction<boolean>>
     ) => {
+    console.log("ready to play");
+
     createTiles(initialTiles, settings, setDuplicatedTiles);
     resetMovesCount(setStatus, initialStatus);
     setTimeLeft(settings.time);
@@ -45,27 +47,3 @@ export const startNewGame = (
     setTimeUp(false);
 }
 
-export const handleEndGame = () => {
-    const playAgain = window.confirm(`Play again?`);
-    if (playAgain) {
-        console.log("restarted game");
-        return true;
-    }
-    else {
-        console.log("quitted game");
-        return false;
-    }
-}
-
-export const checkIfRecord = (
-    stats: StatsType,
-    setStats: React.Dispatch<React.SetStateAction<StatsType>>,
-    score: number
-    ) => {
-    if (score > stats.record) {
-        setStats({
-            ...stats,
-            record: score
-        });
-    }
-}
