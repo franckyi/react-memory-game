@@ -12,7 +12,7 @@ import { stopTime } from './functions/timer-functions';
 import { calculateScore, resetMovesCount, checkIfRecord } from './functions/stats-functions';
 
 const App = () => {
-  // const [theme, setTheme] = useState("western")
+  const [theme, setTheme] = useState("western")
   const [status, setStatus] = useState(initialStatus)
   const [settings, setSettings] = useState(defaultSettings)
   const [stats, setStats] = useState(initialStats)
@@ -197,7 +197,7 @@ const App = () => {
         setSettings={setSettings}
         timeLeft={timeLeft}
         setTimeLeft={setTimeLeft} 
-      // setTheme={setTheme} theme={theme} 
+        setTheme={setTheme} theme={theme} 
       />
 
       {duplicatedTiles.length > 0 &&

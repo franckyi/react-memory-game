@@ -10,6 +10,6 @@ export type MenuProps = {
     setSettings: React.Dispatch<React.SetStateAction<SettingsType>>
     timeLeft: number
     setTimeLeft: React.Dispatch<React.SetStateAction<number>>
-    // theme: string
-    // setTheme: (theme: string) => void
+    theme: string
+    setTheme: React.Dispatch<React.SetStateAction<any>>
 }
