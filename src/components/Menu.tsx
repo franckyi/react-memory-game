@@ -1,8 +1,7 @@
-import { initialStats } from "../model/initial-states"
 import sets from "../model/sets"
 import { MenuProps } from "../types/menuProps"
 
-const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTimeLeft, theme, setTheme, setInitialTiles} : MenuProps ) => {
+const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, setTheme, setInitialTiles} : MenuProps ) => {
 
     function handleDifficultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
         event.preventDefault()
@@ -29,11 +28,12 @@ const Menu = ( {stats, setStats, status, settings, setSettings, timeLeft, setTim
             <div className="menu__first-row">
                 <div>
                     <span>Won: {stats.won} </span>
+                    <span>Lost: {stats.lost} </span>
                     <span>Record: {stats.record}</span>
                 </div>
 
                 <form action="">
-                    <label htmlFor="theme">Change theme</label>
+                    <label htmlFor="theme">Change theme </label>
                     <select name="theme" id="theme" onChange={handleThemeChange}>
                         <option value="western" defaultChecked>Western</option>
                         <option value="beach">Beach</option>

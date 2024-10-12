@@ -31,17 +31,19 @@ export const checkIfWon = (tiles: TileType[]) => {
 }
 
 export const startNewGame = (
-    initialTiles: TileType[],
-    settings: SettingsType,
-    setDuplicatedTiles: React.Dispatch<React.SetStateAction<TileType[]>>,
-    setStatus: React.Dispatch<React.SetStateAction<StatusType>>,
-    setTimeLeft: React.Dispatch<React.SetStateAction<number>>,
-    ) => {
-    console.log("ready to play");
+  setClickCount: React.Dispatch<React.SetStateAction<number>>,
+  initialTiles: TileType[],
+  settings: SettingsType,
+  setDuplicatedTiles: React.Dispatch<React.SetStateAction<TileType[]>>,
+  setStatus: React.Dispatch<React.SetStateAction<StatusType>>,
+  setTimeLeft: React.Dispatch<React.SetStateAction<number>>,
+  ) => {
+  console.log("ready to play");
 
-    createTiles(initialTiles, settings, setDuplicatedTiles);
-    resetMovesCount(setStatus, initialStatus);
-    setTimeLeft(settings.time);
-    setStatus(initialStatus);
+  createTiles(initialTiles, settings, setDuplicatedTiles);
+  resetMovesCount(setStatus, initialStatus);
+  setClickCount(0);
+  setTimeLeft(settings.time);
+  setStatus(initialStatus);
 }
 

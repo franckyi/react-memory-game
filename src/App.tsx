@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 import Menu from './components/Menu'
 import './assets/css/input.scss';
-import western from './model/sets';
-import beach from './model/sets/beach';
 import Tile from './components/Tile';
-// import { Footer } from './components/Footer';
 import { TileType } from './types/tile';
 import { defaultSettings, initialStatus, initialStats } from './model/initial-states';
 import { isValidClick, resetMove, checkIsFirstClick, reverseClickedTile } from './functions/move-functions';
@@ -12,7 +9,6 @@ import { checkIfWon, startNewGame } from './functions/game-functions';
 import { stopTime } from './functions/timer-functions';
 import { calculateScore, checkIfRecord } from './functions/stats-functions';
 import sets from './model/sets';
-// import { SetType } from './types/set';
 
 const App = () => {
   const [theme, setTheme] = useState<string>("western")
@@ -102,13 +98,13 @@ const App = () => {
 
   // handle difficulty and theme change
   useEffect(() => {
-    startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+    startNewGame(setClickCount, initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
   }, [theme, initialTiles, settings.difficulty, stats.won, stats.lost]);
 
   // handle restart game
   useEffect(() => {
     if (restartGame) {
-      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+      startNewGame(setClickCount, initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
     }
   }, [restartGame]);
 
@@ -164,7 +160,7 @@ const App = () => {
       }
 
       setTimeout(() => {
-        startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
+        startNewGame(setClickCount, initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
       }, 2000);
     }
 
@@ -189,13 +185,12 @@ const App = () => {
     <>
       <Menu
         stats={stats}
-        setStats={setStats}
         status={status}
         settings={settings}
         setSettings={setSettings}
         timeLeft={timeLeft}
         setTimeLeft={setTimeLeft} 
-        setTheme={setTheme} theme={theme}
+        setTheme={setTheme}
         setInitialTiles={setInitialTiles}
       />
 
