@@ -29,17 +29,6 @@ const App = () => {
   const [timeLeft, setTimeLeft] = useState(settings.time)
   const [restartGame, setRestartGame] = useState(false)
 
-  // useEffect(() => {
-  //   console.log("initialTiles set to:", initialTiles);
-  //   setInitialTiles(initialTiles);
-  //   setDuplicatedTiles(initialTiles);
-  // }, [theme, initialTiles])
-
-    // handle theme change
-    useEffect(() => {
-      startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
-    }, [theme, initialTiles]);
-
   let intervalId: number | undefined = undefined;
 
   function handleTileClick(id: number) {
@@ -111,10 +100,10 @@ const App = () => {
 
   }
 
-  // handle difficulty change
+  // handle difficulty and theme change
   useEffect(() => {
     startNewGame(initialTiles, settings, setDuplicatedTiles, setStatus, setTimeLeft);
-  }, [settings.difficulty, stats.won, stats.lost]);
+  }, [theme, initialTiles, settings.difficulty, stats.won, stats.lost]);
 
   // handle restart game
   useEffect(() => {
