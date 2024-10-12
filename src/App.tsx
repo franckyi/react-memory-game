@@ -170,18 +170,20 @@ const App = () => {
       />
 
       {duplicatedTiles.length > 0 &&
-        <div className="tiles" onClick={(e)=>e.preventDefault()}>
-          {duplicatedTiles.map((tile) => (
-            <Tile
-              key={tile.id}
-              id={tile.id}
-              img={tile.img}
-              revealed={tile.revealed}
-              matched={tile.matched}
-              handleTileClick={handleTileClick}
-            />
-          ))}
-        </div>
+        <main>
+          <div className="tiles" onClick={(e)=>e.preventDefault()}>
+            {duplicatedTiles.map((tile) => (
+              <Tile
+                key={tile.id}
+                id={tile.id}
+                img={tile.img}
+                revealed={tile.revealed}
+                matched={tile.matched}
+                handleTileClick={handleTileClick}
+              />
+            ))}
+          </div>
+        </main>
       }
 
       {status.won && !restartGame && <button type="button" onClick={() => setRestartGame(true)}>Play again</button>}

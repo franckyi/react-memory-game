@@ -23,12 +23,11 @@ a:hover {
 }
 
 body {
+  overflow: hidden;
+  padding: 20px;
   margin: 0;
-  display: flex;
+  width: 100vw;
   height: 100vh;
-  flex-direction: column;
-  justify-content: space-between;  min-width: 320px;
-  align-items: center;
   min-height: 100vh;
   background: darkslategray;
   color: burlywood;
