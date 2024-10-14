@@ -12,7 +12,7 @@ export const initialStats: StatsType = {
 export const defaultSettings: SettingsType = {
     limit: 4,
     difficulty: "Easy",
-    time: 60,
+    time: 45,
     remainingMoves: 24
 }
 

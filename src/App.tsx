@@ -111,7 +111,7 @@ const App = () => {
     if (stats.won) {
       alert(`Congrats 🎉 You did it!\nYour score is: ${status.score}`);
     }
-  }, [stats.won, status.score])
+  }, [stats.won])
 
   useEffect(() => {
     if (stats.lost) {
@@ -156,7 +156,7 @@ const App = () => {
       }, 2000);
     }
 
-  }, [status.remainingMoves, timeLeft, duplicatedTiles, initialTiles, intervalId, settings, stats, status]);
+  }, [status.remainingMoves, timeLeft, duplicatedTiles, initialTiles, intervalId]);
 
   // handle timer
   useEffect(() => {
@@ -202,7 +202,6 @@ const App = () => {
           </div>
         </main>
       }
-      <footer>illustratons from freepik </footer>
     </>
   )
 }

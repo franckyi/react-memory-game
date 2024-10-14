@@ -6,9 +6,15 @@ export const isValidClick = (
     currentTile: TileType | undefined,
     status: StatusType
     ) => {
-    if (!currentTile || (previousTile && currentTile.id === previousTile.id) || status.remainingMoves === 0) {
+    if (!currentTile ||
+      (previousTile && currentTile.id === previousTile.id) ||
+      status.remainingMoves === 0 ||
+      previousTile && previousTile.matched && currentTile.matched ||
+      currentTile && currentTile.matched
+    ) {
       return false;
     }
+
     return true;
 }
 

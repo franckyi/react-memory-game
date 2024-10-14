@@ -11,7 +11,7 @@ const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, set
             ...settings,
             difficulty: event.target.value,
             limit: event.target.value === "easy" ? 4 : event.target.value === "medium" ? 6 : 8,
-            time: event.target.value === "easy" ? 50 : event.target.value === "medium" ? 45 : 35,
+            time: event.target.value === "easy" ? 45 : event.target.value === "medium" ? 40 : 35,
         })
         setTimeLeft(settings.time)
     }
@@ -33,7 +33,7 @@ const Menu = ( {stats, status, settings, setSettings, timeLeft, setTimeLeft, set
                 </div>
 
                 <form action="">
-                    <label htmlFor="theme">Change theme </label>
+                    <label htmlFor="theme">Theme </label>
                     <select name="theme" id="theme" onChange={handleThemeChange}>
                         <option value="western" defaultChecked>Western</option>
                         <option value="beach">Beach</option>
